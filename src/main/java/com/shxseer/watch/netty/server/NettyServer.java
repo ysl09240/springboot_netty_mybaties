@@ -42,7 +42,6 @@ public class NettyServer {
      *
      * @param port
      */
-    @PostConstruct
     public void start() {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();

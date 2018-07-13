@@ -1,5 +1,6 @@
 com\shxseer\watch\netty\server\NettyUtils.class
 com\shxseer\watch\model\CommonParamsBean.class
+com\shxseer\watch\utils\SpringContextBeanUtils.class
 com\shxseer\watch\common\CommonConfig.class
 com\shxseer\watch\controller\HelloController.class
 com\shxseer\watch\netty\client\NettyClient.class
@@ -10,6 +11,7 @@ com\shxseer\watch\model\WaveDataUpBean.class
 com\shxseer\watch\model\WaveDataDownBean.class
 com\shxseer\watch\service\HelloService.class
 com\shxseer\watch\utils\HttpUtils.class
+com\shxseer\watch\common\RedisConfiguration.class
 com\shxseer\watch\model\SedentaryBean.class
 com\shxseer\watch\model\HeartBeatBean.class
 com\shxseer\watch\model\DirectionBean.class
@@ -18,6 +20,8 @@ com\shxseer\watch\Application.class
 com\shxseer\watch\model\HeartRateDataBean.class
 com\shxseer\watch\netty\server\NettyServerHandler$1.class
 com\shxseer\watch\model\BloodBaselineBean.class
+com\shxseer\watch\common\RedisDBHelper.class
+com\shxseer\watch\common\RedisDBHelperImpl.class
 com\shxseer\watch\model\StepBean.class
 com\shxseer\watch\dao\HelloMapper.class
 com\shxseer\watch\netty\server\NettyServerHandler.class

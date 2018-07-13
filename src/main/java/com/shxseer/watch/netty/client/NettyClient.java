@@ -34,7 +34,7 @@ public class NettyClient {
                     break;
                 }
                 //读取服务器端数据
-                DataInputStream input = new DataInputStream(socket.getInputStream());
+                BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
                 //向服务器端发送数据
                 DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
@@ -50,13 +50,23 @@ public class NettyClient {
 
                 out.flush();
                 StringBuilder result = new StringBuilder();
-                String line;
-                String newLine = System.getProperty("line.separator");
-                boolean flag = false;
-                while ((line = input.readLine()) != null) {
-                    result.append(flag ? newLine : "").append(line);
-                    flag = true;
-                }
+                /**
+                 * 注释的这种方法，由于阻塞函数read()的原因，最后一次如果没有读到内容，会阻塞
+                 */
+//                String line;
+//                String newLine = System.getProperty("line.separator");
+//                boolean flag = false;
+//                while ((line = input.readLine()) != null) {
+//                    result.append(flag ? newLine : "").append(line);
+//                    flag = true;
+//                }
+                /**
+                 *用下面这种方法比较好
+                 */
+                do {
+                    result.append(input.readLine());
+                }while (input.ready());
+
                 String ret = result.toString();
                 System.out.println("服务器端返回过来的是: " + ret);
                 // 如接收到 "OK" 则断开连接

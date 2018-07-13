@@ -1,5 +1,6 @@
 package com.shxseer.watch.controller;
 
+import com.shxseer.watch.common.RedisDBHelper;
 import com.shxseer.watch.service.HelloService;
 import com.shxseer.watch.vo.DrugStoreVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,13 @@ public class HelloController {
     @Autowired
     HelloService helloService;
 
+    @Autowired
+    RedisDBHelper redisDBHelper;
+
     @RequestMapping("/hello")
     @ResponseBody
     public DrugStoreVo hello(@RequestParam String id){
+        System.out.println(redisDBHelper.hashGet("firstMap","firstKey"));
         return helloService.findDrugStore(id);
     }
 }

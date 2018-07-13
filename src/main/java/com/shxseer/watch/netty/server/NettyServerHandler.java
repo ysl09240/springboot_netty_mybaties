@@ -23,41 +23,10 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
 
 
     @Override
-    protected void messageReceived(ChannelHandlerContext ctx, String msg) throws Exception {
-
-        logger.debug("-------消息来啦："+msg);
-        Channel channel = ctx.channel();
-        final String channelId = channel.id().toString();
-        logger.debug("channelId:" + channelId + " msg:" + msg + " cache:" + NettyUtils.channelCache.size());
-
-        channel.writeAndFlush("OK");
-        HelloService service = (HelloService) SpringContextBeanUtils.getBean("serviceName");
-//        switch (msg.getType()) {
-//            case LiveMessage.TYPE_HEART: {
-//                LiveChannelCache cache = channelCache.get(channelId);
-//                ScheduledFuture scheduledFuture = ctx.executor().schedule(
-//                        () -> channel.close(), 5, TimeUnit.SECONDS);
-//                cache.getScheduledFuture().cancel(true);
-//                cache.setScheduledFuture(scheduledFuture);
-//                ctx.channel().writeAndFlush(msg);
-//                break;
-//            }
-//            case LiveMessage.TYPE_MESSAGE: {
-//                channelCache.entrySet().stream().forEach(entry -> {
-//                    Channel otherChannel = entry.getValue().getChannel();
-//                    otherChannel.writeAndFlush(msg);
-//                });
-//                break;
-//            }
-//        }
-
-    }
-
-    @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if(evt instanceof IdleStateEvent){
             IdleStateEvent event = (IdleStateEvent)evt;
-            if(event.state() == IdleState.ALL_IDLE){
+            if(event.state() == IdleState.READER_IDLE){
 
                 //清除超时会话
                 ChannelFuture writeAndFlush = ctx.writeAndFlush("超时，you will close");
@@ -76,6 +45,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         logger.debug("channelReadComplete");
+        ctx.channel().writeAndFlush("OK\r\n88888888888888\r\n");
         super.channelReadComplete(ctx);
     }
 
@@ -106,5 +76,35 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
             NettyUtils.channelCache.put(channelId, channel);
         }
         super.channelActive(ctx);
+    }
+
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
+        logger.debug("-------消息来啦："+msg);
+        Channel channel = ctx.channel();
+        final String channelId = channel.id().toString();
+        logger.debug("channelId:" + channelId + " msg:" + msg + " cache:" + NettyUtils.channelCache.size());
+
+
+
+
+//        switch (msg.getType()) {
+//            case LiveMessage.TYPE_HEART: {
+//                LiveChannelCache cache = channelCache.get(channelId);
+//                ScheduledFuture scheduledFuture = ctx.executor().schedule(
+//                        () -> channel.close(), 5, TimeUnit.SECONDS);
+//                cache.getScheduledFuture().cancel(true);
+//                cache.setScheduledFuture(scheduledFuture);
+//                ctx.channel().writeAndFlush(msg);
+//                break;
+//            }
+//            case LiveMessage.TYPE_MESSAGE: {
+//                channelCache.entrySet().stream().forEach(entry -> {
+//                    Channel otherChannel = entry.getValue().getChannel();
+//                    otherChannel.writeAndFlush(msg);
+//                });
+//                break;
+//            }
+//        }
     }
 }
