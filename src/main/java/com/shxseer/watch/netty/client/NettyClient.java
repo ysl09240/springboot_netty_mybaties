@@ -93,4 +93,68 @@ public class NettyClient {
         }
     }
 
+    public static void start2(){
+        System.out.println("客户端启动...");
+        System.out.println("当接收到服务器端字符为 \"OK\" 的时候, 客户端将终止\n");
+        Socket socket = null;
+        BufferedReader input =null;
+        DataOutputStream out = null;
+        try {
+            socket = new Socket(IP_ADDR, PORT);
+            while (true) {
+                //创建一个流套接字并将其连接到指定主机上的指定端口号
+
+                //读取服务器端数据
+                input = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+
+                //向服务器端发送数据
+                out = new DataOutputStream(socket.getOutputStream());
+
+                //                Map<String, Object> map = new HashMap<String, Object>();
+                ////                map.put("name", "admin");
+                ////                map.put("age", "23");
+                ////                String mapJson = JSON.toJSONString(map);
+                ////
+                ////                out.writeBytes(mapJson);
+
+                StringBuilder result = new StringBuilder("");
+                do {
+                    result.append(input.readLine());
+                }while (input.ready());
+
+                Scanner scanner = new Scanner(System.in);
+                String p = scanner.nextLine();
+                if (p.equals("bye")) {
+                    socket.close();
+                    break;
+                }
+                out.writeBytes(p);
+                out.flush();
+
+
+                String ret = result.toString();
+                System.out.println("服务器端返回过来的是: " + ret);
+                // 如接收到 "OK" 则断开连接
+                if ("OK".equals(ret)) {
+                    System.out.println("客户端将关闭连接");
+                    Thread.sleep(500);
+                }
+
+            }
+            out.close();
+            input.close();
+        } catch (Exception e) {
+            System.out.println("客户端异常:" + e.getMessage());
+        } finally {
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    socket = null;
+                    System.out.println("客户端 finally 异常:" + e.getMessage());
+                }
+            }
+        }
+    }
+
 }

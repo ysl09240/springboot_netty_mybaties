@@ -1,5 +1,6 @@
 package com.shxseer.watch.netty.server;
 
+import com.shxseer.watch.common.CommonQueue;
 import com.shxseer.watch.service.HelloService;
 import com.shxseer.watch.utils.SpringContextBeanUtils;
 import io.netty.channel.*;
@@ -92,8 +93,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
         String time = (df.format(new Date()));// new Date()为获取当前系统时间
         logger.debug("time:"+time+" channelId:" + channelId + " msg:" + msg + " cache:" + NettyUtils.channelCache.size());
-
-
+        CommonQueue.addMsg(msg);
 
 //        switch (msg.getType()) {
 //            case LiveMessage.TYPE_HEART: {
