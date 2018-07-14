@@ -9,6 +9,9 @@ import io.netty.util.concurrent.ScheduledFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 /**
  * 服务端处理器
@@ -45,7 +48,6 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         logger.debug("channelReadComplete");
-        ctx.channel().writeAndFlush("OK\r\n88888888888888\r\n");
         super.channelReadComplete(ctx);
     }
 
@@ -63,9 +65,12 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
         Channel channel = ctx.channel();
         final String channelId = channel.id().toString();
         if (!NettyUtils.channelCache.containsKey(channelId)) {
-            logger.debug("channelCache.containsKey(channelId), put key:" + channelId);
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+            String time1 = (df.format(new Date()));// new Date()为获取当前系统时间
+            logger.debug("time:"+time1+" channelCache.containsKey(channelId), put key:" + channelId);
             channel.closeFuture().addListener(future -> {
-                logger.debug("channel close, remove key:" + channelId);
+                String time2 = (df.format(new Date()));// new Date()为获取当前系统时间
+                logger.debug("time:"+time2+" channel close, remove key:" + channelId);
                 NettyUtils.channelCache.remove(channelId);
             });
 //            ScheduledFuture scheduledFuture = ctx.executor().schedule(
@@ -75,6 +80,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
 //                    }, 20, TimeUnit.SECONDS);
             NettyUtils.channelCache.put(channelId, channel);
         }
+        ctx.channel().writeAndFlush("{channelId:"+channelId+"}\r\n");
         super.channelActive(ctx);
     }
 
@@ -83,8 +89,9 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
         logger.debug("-------消息来啦："+msg);
         Channel channel = ctx.channel();
         final String channelId = channel.id().toString();
-        logger.debug("channelId:" + channelId + " msg:" + msg + " cache:" + NettyUtils.channelCache.size());
-
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        String time = (df.format(new Date()));// new Date()为获取当前系统时间
+        logger.debug("time:"+time+" channelId:" + channelId + " msg:" + msg + " cache:" + NettyUtils.channelCache.size());
 
 
 
@@ -106,5 +113,12 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
 //                break;
 //            }
 //        }
+
+
+        ctx.channel().writeAndFlush("OK\r\n88888888888888\r\n");
+
     }
+
+
+
 }
