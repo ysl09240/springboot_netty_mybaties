@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.shxseer.watch.dao.HelloMapper">
+<mapper namespace="com.shxseer.watch.dao.CommandMapper">
 
     <!-- 根据药品id查询药品 -->
     <select id="findDrugStore" parameterType="java.lang.String" resultType="com.shxseer.watch.vo.DrugStoreVo">

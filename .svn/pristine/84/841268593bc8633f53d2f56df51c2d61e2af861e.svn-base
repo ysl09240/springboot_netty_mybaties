@@ -7,9 +7,6 @@ package com.shxseer.watch.model;
  * @create 2018-07-11 15:34
  **/
 public class MessageType {
-
-    public final static String STOP_LINE="\r\n";
-
     public final static Integer MSG_WAVE = 0;
     public final static Integer MSG_SEDENTARY = 1;
     public final static Integer MSG_DIRECT= 2;
@@ -20,10 +17,9 @@ public class MessageType {
     public final static Integer MSG_COMMON_PARAMETERS= 7;
     public final static Integer MSG_BLOOD_BASELINE= 8; //血糖血压基准值
 
-    public final static Integer ISVALID_FALSE = 0;//是否有效——无效
-    public final static Integer ISVALID_TRUE = 1;//是否有效——有效
 
     public final static String RETURN_TYPE_TERIOD = "teriod" ; //疲劳
+
     public final static String RETURN_TYPE_HOLTCOLD  = "holtCold"; // 风热感冒
     public final static String RETURN_TYPE_COLD  = "cold"; //风寒感冒
     public final static String RETURN_TYPE_BLOODSUGAR  = "bloodSugar"; // 血糖
@@ -40,7 +36,5 @@ public class MessageType {
     public final static String RETURN_TYPE_FORTHWITH  = "forthwith"; // 积食
     public final static String RETURN_TYPE_SLEEPUALITYQ  = "sleepualityQ";  // 睡眠监测
     public final static String RETURN_TYPE_SPORTHERTRATE  = "sportHertRate"; // 运动预警
-
-
 
 }

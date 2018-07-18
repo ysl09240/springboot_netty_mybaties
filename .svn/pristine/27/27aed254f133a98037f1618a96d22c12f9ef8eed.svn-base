@@ -1,14 +1,13 @@
 package com.shxseer.watch.service;
 
+import com.shxseer.watch.model.WaveDataUpBean;
 import com.shxseer.watch.vo.DrugStoreVo;
-
-import java.util.List;
 
 /**
  * @author yangsonglin
  * @create 2018-07-09 17:33
  **/
-public interface HelloService {
+public interface CommandService {
     DrugStoreVo findDrugStore(String id);
-
+    void waveSave(WaveDataUpBean waveDataUpBean);
 }

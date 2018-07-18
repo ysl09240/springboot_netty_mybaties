@@ -17,7 +17,8 @@ import java.util.Scanner;
 public class NettyClient {
     public static final String IP_ADDR = "127.0.0.1";//服务器地址
     public static final int PORT = 9997;//服务器端口号
-    public static final String FUHAd="$_";
+
+//    @PostConstruct
     public static void start(){
         System.out.println("客户端启动...");
         System.out.println("当接收到服务器端字符为 \"OK\" 的时候, 客户端将终止\n");
@@ -98,46 +99,50 @@ public class NettyClient {
         Socket socket = null;
         BufferedReader input =null;
         DataOutputStream out = null;
-        String str = "";
         try {
-            //创建一个流套接字并将其连接到指定主机上的指定端口号
             socket = new Socket(IP_ADDR, PORT);
-            //读取服务器端数据
-            input = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-            //向服务器端发送数据
-            out = new DataOutputStream(socket.getOutputStream());
             while (true) {
+                //创建一个流套接字并将其连接到指定主机上的指定端口号
+
+                //读取服务器端数据
+                input = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+
+                //向服务器端发送数据
+                out = new DataOutputStream(socket.getOutputStream());
+
+                //                Map<String, Object> map = new HashMap<String, Object>();
+                ////                map.put("name", "admin");
+                ////                map.put("age", "23");
+                ////                String mapJson = JSON.toJSONString(map);
+                ////
+                ////                out.writeBytes(mapJson);
+
                 StringBuilder result = new StringBuilder("");
-                while (true){
-                    if(input.ready()){
-                        result.append(input.readLine());
-                        continue;
-                    }
+                do {
+                    result.append(input.readLine());
+                }while (input.ready());
+
+                Scanner scanner = new Scanner(System.in);
+                String p = scanner.nextLine();
+                if (p.equals("bye")) {
+                    socket.close();
                     break;
                 }
-                String ret = result.toString();
-                if("".equals(ret) || null == ret){
-                    continue;
-                }
-                //波型数据
-//                str = Message.waveData(ret)+FUHAd;
-                //血糖是否有效
-                str = Message.bloodBaseIsValid(ret)+FUHAd;
-
-                System.out.println("-----------"+str);
-
-                out.writeBytes(str);
+                out.writeBytes(p);
                 out.flush();
+
+
+                String ret = result.toString();
                 System.out.println("服务器端返回过来的是: " + ret);
                 // 如接收到 "OK" 则断开连接
                 if ("OK".equals(ret)) {
                     System.out.println("客户端将关闭连接");
-                    Thread.sleep(100);
+                    Thread.sleep(500);
                 }
 
             }
-//            out.close();
-//            input.close();
+            out.close();
+            input.close();
         } catch (Exception e) {
             System.out.println("客户端异常:" + e.getMessage());
         } finally {
@@ -151,6 +156,5 @@ public class NettyClient {
             }
         }
     }
-
 
 }

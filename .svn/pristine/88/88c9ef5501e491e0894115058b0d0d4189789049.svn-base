@@ -17,10 +17,10 @@ public class NettyUtils {
 
 
 
-    public static void pushMsg(String channelId,String msg){
+    public static void pushMsg(String channelId,Object bean){
         if(channelCache.containsKey(channelId)){
             Channel channel = channelCache.get(channelId);
-            channel.writeAndFlush(msg);
+            channel.writeAndFlush(bean);
         }
    }
 

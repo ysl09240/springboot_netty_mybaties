@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 任务线程
@@ -28,6 +30,7 @@ public class TaskTread implements Runnable{
     //数据对应的业务类型的键
     private static String CHANNEL_ID_KEY = "channelId";
 
+    private  static String channelId = "";
     private CommandService commandService;
     public TaskTread(){
 
@@ -50,7 +53,7 @@ public class TaskTread implements Runnable{
                 if (datatypeKey == MessageType.MSG_WAVE) {
                     //1.脉搏测量——上传
                     String returnJson = waveData(msg);
-                    NettyUtils.pushMsg(channelId, returnJson + MessageType.STOP_LINE);
+                    NettyUtils.pushMsg(channelId, returnJson + "\r\n");
                 }/*else if(datatypeKey.equals(MessageType.MSG_SEDENTARY)){
                 //2.久坐提醒上传
                 }else if(datatypeKey.equals(MessageType.MSG_DIRECT)){
@@ -68,7 +71,7 @@ public class TaskTread implements Runnable{
                 }*/ else if (datatypeKey == MessageType.MSG_BLOOD_BASELINE) {
                     //9.判断血糖血压基准是否有效
                     String returnJson = bloodBaseIsValid(msg);
-                    NettyUtils.pushMsg(channelId, returnJson + MessageType.STOP_LINE);
+                    NettyUtils.pushMsg(channelId, returnJson + "\r\n");
                 }
             } else {
                 try {

@@ -31,6 +31,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
         if(evt instanceof IdleStateEvent){
             IdleStateEvent event = (IdleStateEvent)evt;
             if(event.state() == IdleState.READER_IDLE){
+
                 //清除超时会话
                 ChannelFuture writeAndFlush = ctx.writeAndFlush("超时，you will close");
                 writeAndFlush.addListener(new ChannelFutureListener() {
@@ -94,7 +95,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
         String time = (df.format(new Date()));// new Date()为获取当前系统时间
         logger.debug("-------消息来啦 time:"+time+" channelId:" + channelId + " msg:" + msg + " cache:" + NettyUtils.channelCache.size());
         CommonQueue.addMsg(msg);
-        channel.flush();
+
     }
 
 
