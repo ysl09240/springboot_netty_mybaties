@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * @create 2018-07-13 11:48
  **/
 
-@Service("RedisDBHelper")
+@Service("redisDBHelper")
 public class RedisDBHelperImpl<HK, T> implements RedisDBHelper<HK, T>{
 
     // 在构造器中获取redisTemplate实例, key(not hashKey) 默认使用String类型

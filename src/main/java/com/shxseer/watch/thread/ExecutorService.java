@@ -18,9 +18,9 @@ public class ExecutorService {
 
     @PostConstruct
     public void start(){
-        ThreadPoolExecutor executor = new ThreadPoolExecutor(4, 8, 200, TimeUnit.MILLISECONDS,
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(4, 4, 200, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(2));
-        for (int i=0;i<1;i++){
+        for (int i=0;i<2;i++){
             executor.execute(new TaskTread());
             System.out.println("线程池中线程数目："+executor.getPoolSize()+"，队列中等待执行的任务数目："+
                     executor.getQueue().size()+"，已执行玩别的任务数目："+executor.getCompletedTaskCount());

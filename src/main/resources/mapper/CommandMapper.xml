@@ -24,6 +24,74 @@
        where d.id=#{id}
     </select>
 
+    <!-- 波形上传 -->
+    <insert id="waveSave" parameterType="com.shxseer.watch.model.WaveDataUpBean">
+      INSERT INTO wave_origin_data(
+        id,
+        imei,
+        sleepy,
+        lrhand,
+        filesize,
+        datanum,
+        starttime,
+        uploadtime,
+        istestbpbs,
+        sportstatus,
+        data
+      )
+      VALUES (
+        #{id},
+        #{imei},
+        #{sleepy},
+        #{lrhand},
+        #{filesize},
+        #{datanum},
+        #{starttime},
+        #{uploadtime},
+        #{istestbpbs},
+        #{sportstatus},
+        #{data}
+      )
+    </insert>
+
+    <!-- 久坐提醒上传 -->
+    <insert id="sedentarySave" parameterType="com.shxseer.watch.model.SedentaryBean">
+        INSERT INTO sedentary (
+          user_id,
+          sittime,
+          sitduration)
+        VALUES (
+          (SELECT
+            a.user_id
+            FROM watch_user_record a
+            LEFT JOIN watch_information b
+            ON a.watch_id = b.id
+            WHERE b.imei = #{imei}
+          )
+          ,#{sittime}
+        ,#{sitduration}
+        )
+    </insert>
+
+    <!-- 计步上传 -->
+    <insert id="stepCountSave" parameterType="com.shxseer.watch.model.StepBean">
+        INSERT INTO step_data (
+        user_id,
+        stepcount,
+        uploadtime)
+        VALUES (
+        (SELECT
+        a.user_id
+        FROM watch_user_record a
+        LEFT JOIN watch_information b
+        ON a.watch_id = b.id
+        WHERE b.imei = #{imei}
+        )
+        ,#{stepcount}
+        ,#{uploadtime}
+        )
+    </insert>
+
     <!-- 血糖血压基准值查询 -->
     <select id="bloodBaseSearch" parameterType="com.shxseer.watch.model.BloodBaselineBean" resultType="java.util.HashMap">
         SELECT
@@ -39,35 +107,5 @@
         DESC
         LIMIT 1
     </select>
-
-    <!-- 波形上传 -->
-    <insert id="waveSave" parameterType="com.shxseer.watch.model.WaveDataUpBean">
-      INSERT INTO wave_origin_data(
-        imei,
-        sleepy,
-        lrhand,
-        filesize,
-        datanum,
-        starttime,
-        uploadtime,
-        istestbpbs,
-        sportstatus,
-        data
-      )
-      VALUES (
-        #{imei},
-        #{sleepy},
-        #{lrhand},
-        #{filesize},
-        #{datanum},
-        #{starttime},
-        #{uploadtime},
-        #{istestbpbs},
-        #{sportstatus},
-        #{data}
-      )
-    </insert>
-
-
 
 </mapper>

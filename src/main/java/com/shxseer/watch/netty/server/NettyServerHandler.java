@@ -2,14 +2,15 @@ package com.shxseer.watch.netty.server;
 
 import com.alibaba.fastjson.JSON;
 import com.shxseer.watch.common.CommonQueue;
+import com.shxseer.watch.common.RedisDBHelper;
+import com.shxseer.watch.model.MessageType;
+import com.shxseer.watch.utils.SpringContextBeanUtils;
 import io.netty.channel.*;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,22 +65,6 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
         final String channelId = channel.id().toString();
-        if (!NettyUtils.channelCache.containsKey(channelId)) {
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-            String time1 = (df.format(new Date()));// new Date()为获取当前系统时间
-            logger.debug("time:"+time1+" channelCache.containsKey(channelId), put key:" + channelId);
-            channel.closeFuture().addListener(future -> {
-                String time2 = (df.format(new Date()));// new Date()为获取当前系统时间
-                logger.debug("time:"+time2+" channel close, remove key:" + channelId);
-                NettyUtils.channelCache.remove(channelId);
-            });
-//            ScheduledFuture scheduledFuture = ctx.executor().schedule(
-//                    () -> {
-//                        logger.debug("schedule runs, close channel:" + channelId);
-//                        channel.close();
-//                    }, 20, TimeUnit.SECONDS);
-            NettyUtils.channelCache.put(channelId, channel);
-        }
         Map<String,Object> msg = new HashMap<>();
         msg.put("channelId",channelId);
         channel.writeAndFlush(JSON.toJSONString(msg) +"\r\n");
@@ -90,9 +75,26 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
         Channel channel = ctx.channel();
         final String channelId = channel.id().toString();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-        String time = (df.format(new Date()));// new Date()为获取当前系统时间
-        logger.debug("-------消息来啦 time:"+time+" channelId:" + channelId + " msg:" + msg + " cache:" + NettyUtils.channelCache.size());
+        logger.debug("-------消息来啦 channelId:" + channelId + " msg:" + msg + " cache:" + NettyUtils.channelCache.size());
+        if (!NettyUtils.channelCache.containsKey(channelId)) {
+            RedisDBHelper redisDBHelper = (RedisDBHelper) SpringContextBeanUtils.getBean("redisDBHelper");
+            //获取数据类型
+            //获取channelId
+            String imei = String.valueOf(JSON.parseObject(msg).get("imei"));
+            channel.closeFuture().addListener(future -> {
+                logger.debug("channel close, remove key:" + channelId);
+                NettyUtils.channelCache.remove(channelId);
+                redisDBHelper.hashRemove(MessageType.IMEI_AND_CHANEL_MAP,imei);
+            });
+//            ScheduledFuture scheduledFuture = ctx.executor().schedule(
+//                    () -> {
+//                        logger.debug("schedule runs, close channel:" + channelId);
+//                        channel.close();
+//                    }, 20, TimeUnit.SECONDS);
+            NettyUtils.channelCache.put(channelId, channel);
+            redisDBHelper.hashPut(MessageType.IMEI_AND_CHANEL_MAP,imei,channelId);
+
+        }
         CommonQueue.addMsg(msg);
         channel.flush();
     }

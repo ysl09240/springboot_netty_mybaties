@@ -4,6 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.shxseer.watch.dao.CommandMapper;
 import com.shxseer.watch.model.BloodBaselineBean;
 import com.shxseer.watch.model.MessageType;
+import com.shxseer.watch.model.NoticeBean;
+import com.shxseer.watch.model.SedentaryBean;
+import com.shxseer.watch.model.StepBean;
 import com.shxseer.watch.model.WaveDataUpBean;
 import com.shxseer.watch.service.CommandService;
 import com.shxseer.watch.vo.DrugStoreVo;
@@ -39,6 +42,32 @@ public class CommandServiceImpl implements CommandService {
     }
 
     /**
+     * 久坐提醒上传
+     */
+    @Override
+    public boolean sedentarySave(SedentaryBean sedentaryBean) {
+        commandMapper.sedentarySave(sedentaryBean);
+        return true;
+    }
+
+    /**
+     * 指令转发
+     */
+    @Override
+    public String noticeTranspond(NoticeBean noticeBean) {
+        return null;
+    }
+
+    /**
+     * 计步上传
+     */
+    @Override
+    public boolean stepCountSave(StepBean stepBean) {
+        commandMapper.stepCountSave(stepBean);
+        return true;
+    }
+
+    /**
      * 血糖血压基准值是否有效判断
      */
     @Override
@@ -65,6 +94,9 @@ public class CommandServiceImpl implements CommandService {
 
         return JSON.toJSON(beanResult).toString();
     }
+
+
+
 
     //目标时间增加天数
     private Date dayAdd(Date date,int addNum){

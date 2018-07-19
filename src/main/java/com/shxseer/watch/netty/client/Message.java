@@ -29,13 +29,6 @@ public class Message {
         map.put("uploadtime",System.currentTimeMillis());
         map.put("istestbpbs",0);
         map.put("sportstatus",0);
-        if("".equals(channelId)||null == channelId){
-            JSONObject object = JSON.parseObject(json);
-            channelId = String.valueOf(object.get("channelId"));
-            map.put("channelId",channelId);
-        }else{
-            map.put("channelId",channelId);
-        }
         String str = FileUtils.readFile("E://shoubiao_data.txt");
         map.put("data",str);
         String mapJson = JSON.toJSONString(map);
@@ -48,17 +41,8 @@ public class Message {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("datatype", 8);
         map.put("imei", "1314");
-
-        if("".equals(channelId)||null == channelId){
-            JSONObject object = JSON.parseObject(json);
-            channelId = String.valueOf(object.get("channelId"));
-            map.put("channelId",channelId);
-        }else{
-            map.put("channelId",channelId);
-        }
         String mapJson = JSON.toJSONString(map);
 
         return mapJson;
     }
-
 }

@@ -9,6 +9,7 @@ package com.shxseer.watch.model;
 public class NoticeBean {
 
     private Integer datatype;
+    private String imei;
     private String content;
     private Long time;
 
@@ -36,4 +37,14 @@ public class NoticeBean {
     public void setTime(Long time) {
         this.time = time;
     }
+
+    public String getImei() {
+        return imei;
+    }
+
+    public void setImei(String imei) {
+        this.imei = imei;
+    }
+
+
 }

@@ -41,6 +41,6 @@ public class MessageType {
     public final static String RETURN_TYPE_SLEEPUALITYQ  = "sleepualityQ";  // 睡眠监测
     public final static String RETURN_TYPE_SPORTHERTRATE  = "sportHertRate"; // 运动预警
 
-
+    public final static String IMEI_AND_CHANEL_MAP = "imeiAndChannelMap";
 
 }
