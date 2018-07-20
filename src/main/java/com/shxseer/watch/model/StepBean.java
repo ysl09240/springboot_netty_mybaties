@@ -7,6 +7,7 @@ package com.shxseer.watch.model;
  **/
 public class StepBean {
 
+    private String id;
     private Integer datatype;
     private String  imei;
     private Integer stepcount;
@@ -43,5 +44,13 @@ public class StepBean {
 
     public void setUploadtime(Long uploadtime) {
         this.uploadtime = uploadtime;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

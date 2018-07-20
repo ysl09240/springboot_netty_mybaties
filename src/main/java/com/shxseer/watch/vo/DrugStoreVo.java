@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
 
@@ -13,7 +14,7 @@ import java.util.Date;
  * @since 2018年6月12日09:45:40
  */
 @ApiModel
-public class DrugStoreVo {
+public class DrugStoreVo implements Serializable {
 
 	@ApiModelProperty(value="主键id")
 	private String id ;

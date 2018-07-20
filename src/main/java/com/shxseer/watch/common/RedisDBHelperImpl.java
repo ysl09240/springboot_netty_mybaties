@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -50,6 +51,11 @@ public class RedisDBHelperImpl<HK, T> implements RedisDBHelper<HK, T>{
     }
 
     @Override
+    public void hashPutAll(String key, Map<HK, T> map) {
+        hashOperations.putAll(key,map);
+    }
+
+    @Override
     public Map<HK, T> hashFindAll(String key) {
         return hashOperations.entries(key);
     }
@@ -67,6 +73,12 @@ public class RedisDBHelperImpl<HK, T> implements RedisDBHelper<HK, T>{
     @Override
     public Long listPush(String key, T domain) {
         return listOperations.rightPush(key, domain);
+    }
+
+    @Override
+    public Long listPushAll(String key, List<T> list) {
+
+        return listOperations.rightPushAll(key,list);
     }
 
     @Override
@@ -96,5 +108,16 @@ public class RedisDBHelperImpl<HK, T> implements RedisDBHelper<HK, T>{
     public boolean expirse(String key, long timeout, TimeUnit timeUnit) {
         return redisTemplate.expire(key, timeout, timeUnit);
     }
+
+    @Override
+    public void set(String key, T value) {
+        valueOperations.set(key,value);
+    }
+
+    @Override
+    public String get(String key) {
+        return (String) valueOperations.get(key);
+    }
+
 
 }

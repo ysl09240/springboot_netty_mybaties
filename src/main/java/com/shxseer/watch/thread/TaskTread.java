@@ -64,8 +64,7 @@ public class TaskTread implements Runnable{
                     NettyUtils.pushMsg(channelId, returnJson + MessageType.STOP_LINE);
                 }else if(datatypeKey.equals(MessageType.MSG_SEDENTARY)){
                 //2.久坐提醒上传
-                    String returnJson = sedentarySave(object);
-                    NettyUtils.pushMsg(channelId, returnJson + MessageType.STOP_LINE);
+                    sedentarySave(object);
                 }/*else if(datatypeKey.equals(MessageType.MSG_DIRECT)){
                     //3.指令
                 }else if(datatypeKey.equals(MessageType.MSG_NOTICE)){
@@ -74,8 +73,7 @@ public class TaskTread implements Runnable{
                     //5.心跳保持
                 }*/ else if(datatypeKey.equals(MessageType.MSG_STEP)){
                     //6.计步上传
-                    String returnJson = stepCountSave(object);
-                    NettyUtils.pushMsg(channelId, returnJson + MessageType.STOP_LINE);
+                    stepCountSave(object);
                 }else if(datatypeKey.equals(MessageType.MSG_HEARTRATE_DATA)){
                     //7.心率上传
                 }else if(datatypeKey.equals(MessageType.MSG_COMMON_PARAMETERS)){
@@ -102,16 +100,14 @@ public class TaskTread implements Runnable{
         return "OK\r\n8888888888888888\r\n";
     }
 
-    private String sedentarySave(JSON json){
+    private void sedentarySave(JSON json){
         //2.久坐提醒——上传
         commandService.sedentarySave(JSON.toJavaObject(json, SedentaryBean.class));
-        return "OK\r\n8888888888888888\r\n";
     }
 
-    private String stepCountSave(JSON json){
+    private void stepCountSave(JSON json){
         //5.计步——上传
         commandService.stepCountSave(JSON.toJavaObject(json, StepBean.class));
-        return "OK\r\n8888888888888888\r\n";
     }
 
     private String bloodBaseIsValid(JSON json){

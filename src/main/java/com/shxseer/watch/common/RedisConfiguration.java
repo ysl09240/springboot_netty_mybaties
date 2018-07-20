@@ -28,14 +28,14 @@ public class RedisConfiguration {
         return template;
     }
 
-    @Bean
-    @ConditionalOnMissingBean(StringRedisTemplate.class)
-    public StringRedisTemplate stringRedisTemplate(
-            RedisConnectionFactory redisConnectionFactory)
-            throws UnknownHostException{
-        StringRedisTemplate template = new StringRedisTemplate();
-        template.setConnectionFactory(redisConnectionFactory);
-        return template;
-    }
+//    @Bean
+//    @ConditionalOnMissingBean(name="stringRedisTemplate")
+//    public StringRedisTemplate stringRedisTemplate(
+//            RedisConnectionFactory redisConnectionFactory)
+//            throws UnknownHostException{
+//        StringRedisTemplate template = new StringRedisTemplate();
+//        template.setConnectionFactory(redisConnectionFactory);
+//        return template;
+//    }
 
 }

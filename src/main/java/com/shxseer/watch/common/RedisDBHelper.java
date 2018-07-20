@@ -24,6 +24,12 @@ public interface RedisDBHelper<HK, T> {
     void hashPut(String key, HK hashKey,T domain);
 
     /**
+     * 添加对象
+     * @param key
+     */
+    void hashPutAll(String key,Map<HK,T> map);
+
+    /**
      * Hash结构 获取指定key所有键值对
      * @param key
      * @return
@@ -47,6 +53,14 @@ public interface RedisDBHelper<HK, T> {
      * @return
      */
     Long listPush(String key, T domain);
+
+    /**
+     * 添加list<map>
+     * @param key
+     * @param list
+     * @return
+     */
+    Long listPushAll(String key,List<T> list);
 
     /**
      * List结构 向头部(Left)添加元素
@@ -79,4 +93,18 @@ public interface RedisDBHelper<HK, T> {
      * @param timeUnit 时间单位
      */
     boolean expirse(String key, long timeout, TimeUnit timeUnit);
+
+    /**
+     * 设置key-value
+     * @param key
+     * @param value
+     */
+    void set(String key,T value);
+
+    /**
+     * 得到值
+     * @param key
+     * @return
+     */
+    String get(String key);
 }

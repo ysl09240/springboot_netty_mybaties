@@ -57,29 +57,33 @@
     <!-- 久坐提醒上传 -->
     <insert id="sedentarySave" parameterType="com.shxseer.watch.model.SedentaryBean">
         INSERT INTO sedentary (
+          id,
           user_id,
           sittime,
           sitduration)
         VALUES (
+        #{id},
           (SELECT
             a.user_id
             FROM watch_user_record a
             LEFT JOIN watch_information b
             ON a.watch_id = b.id
             WHERE b.imei = #{imei}
-          )
-          ,#{sittime}
-        ,#{sitduration}
+          ),
+        #{sittime},
+        #{sitduration}
         )
     </insert>
 
     <!-- 计步上传 -->
     <insert id="stepCountSave" parameterType="com.shxseer.watch.model.StepBean">
         INSERT INTO step_data (
+        id,
         user_id,
         stepcount,
         uploadtime)
         VALUES (
+        #{id},
         (SELECT
         a.user_id
         FROM watch_user_record a

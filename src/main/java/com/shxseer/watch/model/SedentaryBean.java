@@ -7,6 +7,7 @@ package com.shxseer.watch.model;
  * @create 2018-07-12 9:15
  **/
 public class SedentaryBean {
+    private String id;
     private Integer datatype;
     private String imei;
     private Long sittime; //久坐开始时间
@@ -43,5 +44,13 @@ public class SedentaryBean {
 
     public void setSitduration(Long sitduration) {
         this.sitduration = sitduration;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

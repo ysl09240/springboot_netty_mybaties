@@ -9,6 +9,7 @@ import com.shxseer.watch.model.SedentaryBean;
 import com.shxseer.watch.model.StepBean;
 import com.shxseer.watch.model.WaveDataUpBean;
 import com.shxseer.watch.service.CommandService;
+import com.shxseer.watch.utils.IdUtils;
 import com.shxseer.watch.vo.DrugStoreVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,7 @@ public class CommandServiceImpl implements CommandService {
      */
     @Override
     public void waveSave(WaveDataUpBean waveDataUpBean) {
+        waveDataUpBean.setId(IdUtils.uuid());
         commandMapper.waveSave(waveDataUpBean);
     }
 
@@ -46,6 +48,7 @@ public class CommandServiceImpl implements CommandService {
      */
     @Override
     public boolean sedentarySave(SedentaryBean sedentaryBean) {
+        sedentaryBean.setId(IdUtils.uuid());
         commandMapper.sedentarySave(sedentaryBean);
         return true;
     }
@@ -63,6 +66,7 @@ public class CommandServiceImpl implements CommandService {
      */
     @Override
     public boolean stepCountSave(StepBean stepBean) {
+        stepBean.setId(IdUtils.uuid());
         commandMapper.stepCountSave(stepBean);
         return true;
     }
