@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class SpringContextBeanUtils implements ApplicationContextAware {
     protected static ApplicationContext context;
 
+    @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
        context = applicationContext;
     }
@@ -25,6 +26,13 @@ public class SpringContextBeanUtils implements ApplicationContextAware {
 
     public static Object getBean(String name){
         return context.getBean(name);
+    }
+
+    /**
+     * 获取对象 这里重写了bean方法，用类名获取
+     */
+    public static <T> T getBean(Class<T> clazz) throws BeansException {
+        return (T) context.getBean(clazz);
     }
 
 }

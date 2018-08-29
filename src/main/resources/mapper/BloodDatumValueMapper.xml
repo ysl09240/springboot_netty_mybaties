@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shxseer.watch.dao.BloodDatumValueMapper">
+    <!-- 血糖血压基准值实现类
+        @author  zhangliang
+        @since 2018/3/1 11:20 -->
+
+    <resultMap id="bloodDatumValueResultMap" type="com.shxseer.watch.model.BloodDatumValue">
+        <id property="id" column="id"/>
+        <result property="bloodType" column="blood_type"/>
+        <result property="datumValue" column="datum_value"/>
+        <result property="standardInterval" column="standard_interval"/>
+        <result property="createTime" column="create_time"/>
+        <result property="remark" column="remark"/>
+        <result property="userId" column="user_id"/>
+    </resultMap>
+
+    <!-- 根据用户id和类型查询最新的血糖血压基准值 -->
+    <select id="selectBloodDatumValueByCreateTimeandUserId" parameterType="java.util.Map" resultMap="bloodDatumValueResultMap">
+        select * from blood_datum_value b where user_id=#{userId} and blood_type = #{bloodType} order by create_time desc limit 1
+    </select>
+
+
+    <!--张明明添加 查询血糖基准值-->
+    <select id="selectBloodDatumValue" parameterType="java.lang.String" resultType="java.lang.String">
+        select datum_value as datumValue from blood_datum_value where
+        user_id= #{userId} and blood_type = '3' order by create_time desc limit 1
+    </select>
+
+
+    <!--张明明添加 查询血压基准值-->
+    <select id="selectBloodPressValue" parameterType="java.lang.String" resultType="java.lang.String">
+        select datum_value as datumValue from blood_datum_value where
+        user_id= #{userId} and blood_type = '14' order by create_time desc limit 1
+    </select>
+
+</mapper>

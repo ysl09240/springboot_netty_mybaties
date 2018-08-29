@@ -107,7 +107,7 @@ public class HttpUtils {
                 return sb.toString();
             }
             else{	//
-                System.out.println("状态码：" + code);
+                logger.debug("状态码：" + code);
                 return null;
             }
         }

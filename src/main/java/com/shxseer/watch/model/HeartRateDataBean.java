@@ -1,5 +1,7 @@
 package com.shxseer.watch.model;
 
+import java.util.Date;
+
 /**
  * 心率数据上传
  *
@@ -8,11 +10,21 @@ package com.shxseer.watch.model;
  **/
 public class HeartRateDataBean {
 
-
+    private String id;
     private Integer datatype;
     private String imei;
     private Integer heart;
     private Long uploadtime;
+    private Date createTime;
+    private String createBy;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Integer getDatatype() {
         return datatype;
@@ -44,5 +56,21 @@ public class HeartRateDataBean {
 
     public void setUploadtime(Long uploadtime) {
         this.uploadtime = uploadtime;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
     }
 }

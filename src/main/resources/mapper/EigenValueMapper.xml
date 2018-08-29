@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shxseer.watch.dao.EigenValueMapper" >
+
+    <!-- 添加特征值一 -->
+    <insert id="addEigenValueOne" parameterType="com.shxseer.watch.model.EigenValueOne">
+        INSERT INTO eigen_value_one (
+        id,
+        create_time,
+        wave_id,
+        pulse_speed,
+        pulse_area,
+        heart_rate,
+        start_value,
+        start_index,
+        end_value,
+        end_index,
+        center_value,
+        center_index,
+        down_center_value,
+        down_center_index,
+        area,
+        single_wave_length
+        )
+        VALUES
+        (
+        #{id},
+        #{createTime},
+        #{waveId},
+        #{pulseSpeed},
+        #{pulseArea},
+        #{heartRate},
+        #{startValue},
+        #{startIndex},
+        #{endValue},
+        #{endIndex},
+        #{centerValue},
+        #{centerIndex},
+        #{downcenterValue},
+        #{downcenterIndex},
+        #{area},
+        #{singleWaveLength}
+        )
+    </insert>
+
+    <!-- 添加特征值二 -->
+    <insert id="addEigenValueTwo" parameterType="com.shxseer.watch.model.EigenValueTwo">
+        INSERT INTO eigen_value_two (
+        id,
+        eigenvalueone_id,
+        width,
+        single_length,
+        speed,
+        aone_value,
+        aone_index,
+        atwo_value,
+        atwo_index,
+        athr_value,
+        athr_index,
+        bone_value,
+        bone_index,
+        btwo_value,
+        btwo_index,
+        bthr_value,
+        bthr_index,
+        cone_value,
+        cone_index,
+        ctwo_value
+        )
+        VALUES
+        (
+        #{id},
+        #{eigenValueOneId},
+        #{width},
+        #{singleLength},
+        #{speed},
+        #{aoneValue},
+        #{aoneIndex},
+        #{atwoValue},
+        #{atwoIndex},
+        #{athrValue},
+        #{athrIndex},
+        #{boneValue},
+        #{boneIndex},
+        #{btwoValue},
+        #{btwoIndex},
+        #{bthrValue},
+        #{bthrIndex},
+        #{coneValue},
+        #{coneIndex},
+        #{ctwoValue}
+        )
+    </insert>
+
+    <!-- 添加特征值三 -->
+    <insert id="addEigenValueThree" parameterType="com.shxseer.watch.model.EigenValueThree">
+        INSERT INTO eigen_value_three (
+        id,
+        eigenvalueone_id,
+        pulse_interval,
+        peresistance,
+        ctwo_index,
+        aone_shallow_up,
+        aone_shallow_dwon,
+        aone_center_up,
+        aone_center_dwon,
+        aone_deep_up,
+        aone_deep_dwon,
+        atwo_shallow_up,
+        atwo_shallow_dwon,
+        atwo_center_up,
+        atwo_center_dwon,
+        atwo_deep_up,
+        atwo_deep_dwon,
+        athr_shallow_up,
+        athrShallowDwon,
+        athr_center_up,
+        athr_center_dwon
+        )
+        VALUES
+        (
+        #{id},
+        #{eigenValueOneId},
+        #{pulseInterval},
+        #{peresistance},
+        #{ctwoIndex},
+        #{aoneShallowUp},
+        #{aoneShallowDwon},
+        #{aoneCenterUp},
+        #{aoneCenterDwon},
+        #{aoneDeepUp},
+        #{aoneDeepDwon},
+        #{atwoShallowUp},
+        #{atwoShallowDwon},
+        #{atwoCenterUp},
+        #{atwoCenterDwon},
+        #{atwoDeepUp},
+        #{atwoDeepDwon},
+        #{athrShallowUp},
+        #{athrShallowDwon},
+        #{athrCenterUp},
+        #{athrCenterDwon}
+        )
+    </insert>
+
+    <!-- 添加特征值四 -->
+    <insert id="addEigenValueFour" parameterType="com.shxseer.watch.model.EigenValueFour">
+        INSERT INTO eigen_value_four (
+        id,
+        eigenvalueone_id,
+        stroke_volume,
+        rise_time,
+        fall_time,
+        athr_deep_up,
+        athr_deep_dwon,
+        bone_shallow_up,
+        bone_shallow_dwon,
+        bone_center_up,
+        bone_center_dwon,
+        bone_deep_up,
+        bone_deep_dwon,
+        btwo_shallow_up,
+        btwo_shallow_dwon,
+        btwo_center_up,
+        btwo_center_dwon,
+        btwo_deep_up,
+        btwo_deep_dwon,
+        bthr_shallow_up,
+        bthr_shallow_dwon,
+        bthr_center_up
+        )
+        VALUES
+        (
+        #{id},
+        #{eigenValueOneId},
+        #{strokeVolume},
+        #{riseTime},
+        #{fallTime},
+        #{athrDeepUp},
+        #{athrDeepDwon},
+        #{boneShallowUp},
+        #{boneShallowDwon},
+        #{boneCenterUp},
+        #{boneCenterDwon},
+        #{boneDeepUp},
+        #{boneDeepDwon},
+        #{btwoShallowUp},
+        #{btwoShallowDwon},
+        #{btwoCenterUp},
+        #{btwoCenterDwon},
+        #{btwoDeepUp},
+        #{btwoDeepDwon},
+        #{bthrShallowUp},
+        #{bthrShallowDwon},
+        #{bthrCenterUp}
+        )
+    </insert>
+
+    <!-- 添加特征值五 -->
+    <insert id="addEigenValueFive" parameterType="com.shxseer.watch.model.EigenValueFive">
+        INSERT INTO eigen_value_five (
+        id,
+        eigenvalueone_id,
+        bthr_center_dwon,
+        bthr_deep_up,
+        bthr_deep_dwon,
+        cone_shallow_up,
+        cone_shallow_dwon,
+        cone_center_up,
+        cone_center_dwon,
+        cone_deep_up,
+        cone_deep_dwon,
+        ctwo_shallow_up,
+        ctwo_shallow_dwon,
+        ctwo_center_up,
+        ctwo_center_dwon,
+        ctwo_deep_up,
+        ctwo_deep_dwon,
+        average_press
+        )
+        VALUES
+        (
+        #{id},
+        #{eigenValueOneId},
+        #{bthrCenterDwon},
+        #{bthrDeepUp},
+        #{bthrDeepDwon},
+        #{coneShallowUp},
+        #{coneShallowDwon},
+        #{coneCenterUp},
+        #{coneCenterDwon},
+        #{coneDeepUp},
+        #{coneDeepDwon},
+        #{ctwoShallowUp},
+        #{ctwoShallowDwon},
+        #{ctwoCenterUp},
+        #{ctwoCenterDwon},
+        #{ctwoDeepUp},
+        #{ctwoDeepDwon},
+        #{averagePress}
+        )
+    </insert>
+
+    <!-- 根据原始数据主键id查询特征值一对象 -->
+    <select id="getEigenValueOnebyWaveId" parameterType="java.lang.String" resultType="com.shxseer.watch.model.EigenValueOne">
+        SELECT
+        id,
+        create_time as createTime,
+        wave_id as waveId,
+        pulse_speed as pulseSpeed,
+        pulse_area as pulseArea,
+        heart_rate as heartRate,
+        start_value as startValue,
+        start_index as startIndex,
+        end_value as endValue,
+        end_index as endIndex,
+        center_value as centerValue,
+        center_index as centerIndex,
+        down_center_value as downcenterValue,
+        down_center_index as downcenterIndex,
+        area,
+        single_wave_length as singleWaveLength
+        FROM
+        eigen_value_one
+        where wave_id = #{waveId}
+    </select>
+
+    <!-- 根据特征值一主键id查询特征值二对象 -->
+    <select id="getEigenValueTwobyEigenValueOneId" parameterType="java.lang.String" resultType="com.shxseer.watch.model.EigenValueTwo">
+        SELECT
+        id,
+        eigenvalueone_id as eigenValueOneId,
+        width,
+        single_length as singleLength,
+        speed,
+        aone_value as aoneValue,
+        aone_index as aoneIndex,
+        atwo_value as atwoValue,
+        atwo_index as atwoIndex,
+        athr_value as athrValue,
+        athr_index as athrIndex,
+        bone_value as boneValue,
+        bone_index as boneIndex,
+        btwo_value as btwoValue,
+        btwo_index as btwoIndex,
+        bthr_value as bthrValue,
+        bthr_index as bthrIndex,
+        cone_value as coneValue,
+        cone_index as coneIndex,
+        ctwo_value as ctwoValue
+        FROM
+        eigen_value_two
+        where eigenvalueone_id = #{eigenValueOneId}
+    </select>
+
+    <!-- 根据特征值一主键id查询特征值三对象 -->
+    <select id="getEigenValueThreebyEigenValueOneId" parameterType="java.lang.String" resultType="com.shxseer.watch.model.EigenValueThree">
+        SELECT
+        id,
+        eigenvalueone_id as eigenValueOneId,
+        pulse_interval as pulseInterval,
+        peresistance as peresistance,
+        ctwo_index as ctwoIndex,
+        aone_shallow_up as aoneShallowUp,
+        aone_shallow_dwon as aoneShallowDwon,
+        aone_center_up as aoneCenterUp,
+        aone_center_dwon as aoneCenterDwon,
+        aone_deep_up as aoneDeepUp,
+        aone_deep_dwon as aoneDeepDwon,
+        atwo_shallow_up as atwoShallowUp,
+        atwo_shallow_dwon as atwoShallowDwon,
+        atwo_center_up as atwoCenterUp,
+        atwo_center_dwon as atwoCenterDwon,
+        atwo_deep_up as atwoDeepUp,
+        atwo_deep_dwon as atwoDeepDwon,
+        athr_shallow_up as athrShallowUp,
+        athrShallowDwon as athrShallowDwon,
+        athr_center_up as athrCenterUp,
+        athr_center_dwon as athrCenterDwon
+        FROM
+        eigen_value_three
+        where eigenvalueone_id = #{eigenValueOneId}
+    </select>
+
+    <!-- 根据特征值一主键id查询特征值四对象 -->
+    <select id="getEigenValueFourbyEigenValueOneId" parameterType="java.lang.String" resultType="com.shxseer.watch.model.EigenValueFour">
+        SELECT
+        id,
+        eigenvalueone_id as eigenValueOneId,
+        stroke_volume as strokeVolume,
+        rise_time as riseTime,
+        fall_time as fallTime,
+        athr_deep_up as athrDeepUp,
+        athr_deep_dwon as athrDeepDwon,
+        bone_shallow_up as boneShallowUp,
+        bone_shallow_dwon as boneShallowDwon,
+        bone_center_up as boneCenterUp,
+        bone_center_dwon as boneCenterDwon,
+        bone_deep_up as boneDeepUp,
+        bone_deep_dwon as boneDeepDwon,
+        btwo_shallow_up as btwoShallowUp,
+        btwo_shallow_dwon as btwoShallowDwon,
+        btwo_center_up as btwoCenterUp,
+        btwo_center_dwon as btwoCenterDwon,
+        btwo_deep_up as btwoDeepUp,
+        btwo_deep_dwon as btwoDeepDwon,
+        bthr_shallow_up as bthrShallowUp,
+        bthr_shallow_dwon as bthrShallowDwon,
+        bthr_center_up as bthrCenterUp
+        FROM
+        eigen_value_four
+        where eigenvalueone_id = #{eigenValueOneId}
+    </select>
+
+    <!-- 根据特征值一主键id查询特征值五对象 -->
+    <select id="getEigenValueFivebyEigenValueOneId" parameterType="java.lang.String" resultType="com.shxseer.watch.model.EigenValueFive">
+            SELECT
+              id,
+              eigenvalueone_id as eigenValueOneId,
+              bthr_center_dwon as bthrCenterDwon,
+              bthr_deep_up as bthrDeepUp,
+              bthr_deep_dwon as bthrDeepDwon,
+              cone_shallow_up as coneShallowUp,
+              cone_shallow_dwon as coneShallowDwon,
+              cone_center_up as coneCenterUp,
+              cone_center_dwon as coneCenterDwon,
+              cone_deep_up as coneDeepUp,
+              cone_deep_dwon as coneDeepDwon,
+              ctwo_shallow_up as ctwoShallowUp,
+              ctwo_shallow_dwon as ctwoShallowDwon,
+              ctwo_center_up as ctwoCenterUp,
+              ctwo_center_dwon as ctwoCenterDwon,
+              ctwo_deep_up as ctwoDeepUp,
+              ctwo_deep_dwon as ctwoDeepDwon,
+              average_press as averagePress
+            FROM
+              eigen_value_five
+            where eigenvalueone_id = #{eigenValueOneId}
+    </select>
+
+</mapper>

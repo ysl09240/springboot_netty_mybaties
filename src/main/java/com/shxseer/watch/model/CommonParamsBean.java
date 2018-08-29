@@ -11,7 +11,7 @@ public class CommonParamsBean {
     private Integer datatype; //0：脉搏  1：久坐提醒 2：推送提醒 3：指令 4：心跳保持 5： 记步 6：心率7：服务器回复初始状态
     private Integer interval;//默认时间间隔	单位分钟
     private Integer testtime;	//默认测量时长 单位分钟
-    private String serveurl;	//例 192.168.1.1:8888
+    private String serverurl;	//例 192.168.1.1:8888
     private String bind	;//0：未绑定 1：绑定
 
     public Integer getDatatype() {
@@ -39,12 +39,12 @@ public class CommonParamsBean {
         this.testtime = testtime;
     }
 
-    public String getServeurl() {
-        return serveurl;
+    public String getServerurl() {
+        return serverurl;
     }
 
-    public void setServeurl(String serveurl) {
-        this.serveurl = serveurl;
+    public void setServerurl(String serverurl) {
+        this.serverurl = serverurl;
     }
 
     public String getBind() {

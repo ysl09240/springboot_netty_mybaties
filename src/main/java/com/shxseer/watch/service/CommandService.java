@@ -1,11 +1,10 @@
 package com.shxseer.watch.service;
 
-import com.shxseer.watch.model.BloodBaselineBean;
-import com.shxseer.watch.model.NoticeBean;
-import com.shxseer.watch.model.SedentaryBean;
-import com.shxseer.watch.model.StepBean;
-import com.shxseer.watch.model.WaveDataUpBean;
+import com.shxseer.watch.model.*;
 import com.shxseer.watch.vo.DrugStoreVo;
+import com.shxseer.watch.vo.UserWaveVo;
+
+import java.util.List;
 
 /**
  * @author yangsonglin
@@ -18,28 +17,100 @@ public interface CommandService {
     /**
      * 波形保存
      */
-    void waveSave(WaveDataUpBean waveDataUpBean);
+    WaveDataUpBean waveSave(WaveDataUpBean waveDataUpBean,User user);
 
     /**
      * 久坐提醒上传
      */
     boolean sedentarySave(SedentaryBean sedentaryBean);
 
-    /**
-     * 指令转发
-     */
-    String noticeTranspond(NoticeBean noticeBean);
 
     /**
      * 计步上传
      */
-    boolean stepCountSave(StepBean stepBean);
+    void stepCountSave(StepBean stepBean);
 
     /**
      * 血糖血压基准值是否有效判断
      */
     String bloodBaseIsValid(BloodBaselineBean bloodBaselineBean);
 
+    /**
+     * 查询公共参数
+     * @param commonType
+     * @return
+     */
+    CommonParamsBean findCommonParams(String commonType);
+
+    /**
+     * 心率上传
+     * @param heartRateDataBean
+     */
+    void heartRateDataSave(HeartRateDataBean heartRateDataBean);
+
+    /**
+     * 查询手表和用户对应记录
+     * @param heartBeatBean
+     * @return
+     */
+    WatchUserRecordBean findWatchUserRecordByImei(HeartBeatBean heartBeatBean);
+
+    /**
+     * 处理波型数据
+     * @param waveDataUpBean
+     * @return
+     */
+    Object waveDealData(WaveDataUpBean waveDataUpBean,User user);
 
 
+    /**
+     * 计算血糖报告
+     * @param userWaveVo
+     */
+    ReportDisease calculateBloodGlucoseReport(UserWaveVo userWaveVo);
+
+    /**
+     * 计算疲劳报告
+     * @param userWaveVo
+     */
+    ReportDisease calculateTeriodReport(UserWaveVo userWaveVo);
+
+    /**
+     * 计算血压报告
+     * @param userWaveVo
+     */
+    ReportDisease calculateBloodPressReport(UserWaveVo userWaveVo);
+
+    /**
+     * 计算血液粘稠度报告
+     * @param userWaveVo
+     */
+    ReportDisease calculateBloodConsistencyReport(UserWaveVo userWaveVo);
+
+    /**
+     * 根据imei号获取原始数据主键id集合
+     */
+    List<String> getWaveIdByimei(String imei);
+
+    /**
+     * 根据主键id查询原始数据对象
+     * @param waveId
+     * @return
+     */
+    WaveDataUpBean getWaveDataUpBeanById(String waveId);
+
+    /**
+     * 根据本次测量时间和设备号查询当前用户的上一组数据的主键id
+     * @param imei 设备号
+     * @param startTime 测量时间
+     * @return
+     */
+    String getBeforeWaveIdByStarttime(String imei, double startTime);
+
+    /**
+     * 根据imei查询用户
+     * @param imei
+     * @return
+     */
+    User queryUserByImei(String imei);
 }

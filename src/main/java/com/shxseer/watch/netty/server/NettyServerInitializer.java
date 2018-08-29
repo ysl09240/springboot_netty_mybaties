@@ -29,11 +29,12 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
     public void initChannel(SocketChannel ch) throws Exception {
         ByteBuf buf = Unpooled.copiedBuffer("$_".getBytes());
         ChannelPipeline pipeline = ch.pipeline();
-        pipeline.addLast(new IdleStateHandler(60,0,0,TimeUnit.SECONDS));
+        pipeline.addLast(new IdleStateHandler(600,0,0,TimeUnit.SECONDS));
         pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));
         pipeline.addLast(new DelimiterBasedFrameDecoder(Integer.MAX_VALUE, buf));
         pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
         pipeline.addLast(new NettyServerHandler());
+        pipeline.addLast(new FileServerHandler());
     }
 
 }

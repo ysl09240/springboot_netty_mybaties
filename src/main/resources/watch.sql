@@ -1,0 +1,1 @@
+alter table wave_origin_data add file_url varchar(200) not null default "";

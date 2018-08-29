@@ -17,7 +17,7 @@ public class CommonQueue {
 
     private static Logger logger = LoggerFactory.getLogger(CommonQueue.class);
 
-    public static BlockingQueue<String> queue = new LinkedBlockingQueue<>(10000);
+    public static final BlockingQueue<String> queue = new LinkedBlockingQueue<>(10000);
 
     public static void addMsg(String msg){
         Boolean flag = queue.offer(msg);

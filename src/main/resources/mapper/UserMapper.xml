@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shxseer.watch.dao.UserMapper" >
+
+    <select id="queryUserByImei" parameterType="java.lang.String" resultType="com.shxseer.watch.model.User">
+        SELECT
+            u.id,
+            u.login_name as  loginName,
+            u.sex,
+            u.cellphone,
+            u.cname as cName,
+            u.head_portrait as  headPortrait,
+            u.birthday,
+            u.stature,
+            u.weight,
+            u.location,
+            u.blood_glucose as  bloodGlucose,
+            u.head_portrait_time as headPortraitTime,
+            u.password
+        FROM user u
+        LEFT JOIN watch_user_record wur on wur.user_id=u.id
+        left JOIN watch_information wi on wi.id = wur.watch_id
+        WHERE wi.imei = #{imei}
+    </select>
+
+</mapper>

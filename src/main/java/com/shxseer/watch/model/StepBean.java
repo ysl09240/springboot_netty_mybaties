@@ -1,9 +1,10 @@
 package com.shxseer.watch.model;
 
 /**
- * 计步类
+ * 计步
+ *
  * @author yangsonglin
- * @create 2018-07-12 9:35
+ * @create 2018-07-21 13:38
  **/
 public class StepBean {
 
@@ -13,6 +14,13 @@ public class StepBean {
     private Integer stepcount;
     private Long uploadtime;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Integer getDatatype() {
         return datatype;
@@ -44,13 +52,5 @@ public class StepBean {
 
     public void setUploadtime(Long uploadtime) {
         this.uploadtime = uploadtime;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 }

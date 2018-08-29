@@ -19,6 +19,7 @@ public class WaveDataUpBean {
     private Integer istestbpbs;
     private Integer sportstatus;
     private String data;
+    private String fileUrl;
 
 
     public String getId() {
@@ -116,4 +117,18 @@ public class WaveDataUpBean {
     public void setData(String data) {
         this.data = data;
     }
+
+    public String getFileUrl() {
+        return fileUrl;
+    }
+
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
+    }
+
+
+
+
+
+
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shxseer.watch.dao.ReportDiseaseMapper">
+
+    <insert id="addReportDisease" parameterType="com.shxseer.watch.model.ReportDisease">
+       INSERT INTO report_disease (id, disease_code, user_id, head_message, STATUS
+            , exponent, risk_assessment, other_risk, suggest_list, time_scope
+            , high_pressure, low_pressure,blood_glucose_value,  create_time
+            , start_time,blood_pressure,is_warning,adornType, max_values, min_value, eat_sataus
+            , low_max_value, low_min_value, warn_report)
+        VALUES (#{id}, #{diseaseCode}, #{userId}, #{headMessage}, #{status}
+            , #{exponent}, #{riskAssessment}, #{otherRisk}, #{suggestList}, #{timeScope}
+            , #{highPressure}, #{lowPressure},#{bloodGlucoseValue}, #{createTime}
+            , #{startTime}, #{bloodPressure}, #{isWarning}, #{adornType}, #{maxValues}, #{minValue}, #{eatSataus}
+            , #{lowMaxValue}, #{lowMinValue}, #{warnReport})
+    </insert>
+
+    <!-- 根据用户id查询血糖参数定量值 -->
+    <select id="getBloodGlucoseValueByUserId" parameterType="string" resultType="double">
+        SELECT blood_glucose_value FROM report_disease WHERE user_id = #{userId} AND disease_code = 3;
+    </select>
+
+    <!-- 查询当前用户的所有血压的高压和低压值 -->
+    <select id="getBloodPressValueByUserId" parameterType="string" resultType="com.shxseer.watch.vo.BloodPressValueVo">
+        SELECT high_pressure as highPressure, low_pressure as lowPressure FROM report_disease WHERE user_id = #{userId} AND disease_code = 14;
+    </select>
+</mapper>

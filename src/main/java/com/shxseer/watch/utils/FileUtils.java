@@ -1,23 +1,33 @@
-package com.shxseer.watch.netty.client;
+package com.shxseer.watch.utils;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * @author yangsonglin
  * @create 2018-07-16 16:55
  **/
 public class FileUtils {
-
+    private static Logger logger = LoggerFactory.getLogger(FileUtils.class);
     /**
      * 读取过程暂停，给当前做一个标记，下一次从标记位置开始读取
      * @param fileName
      */
     public static String readFile(String fileName) {
         // TODO Auto-generated method stub
-
+        //创建BufferedReader
+//        try {
+//            BufferedReader bfr=Files.newBufferedReader(fileName);
+//            System.out.println(bfr.readLine());
+//            bfr.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         //读取过程中暂停
         //给当前做一个标记
         //下一次从标记位置开始读取
@@ -51,5 +61,28 @@ public class FileUtils {
         return str;
     }
 
+    public static void writeFile(String path,String filename,String str){
+        Path fpath=Paths.get(path);
+        Path file = Paths.get(filename);
+        Path inputFile = fpath.resolve(file);
+        //创建文件
+        if(!Files.exists(fpath)) {
+            try {
+                Files.createDirectories(fpath);
+                Files.createFile(inputFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        //创建BufferedWriter
+        try {
+            BufferedWriter bfw=Files.newBufferedWriter(inputFile);
+            bfw.write(str);
+            bfw.flush();
+            bfw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

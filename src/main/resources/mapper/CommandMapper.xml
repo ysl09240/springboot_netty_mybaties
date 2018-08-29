@@ -37,7 +37,7 @@
         uploadtime,
         istestbpbs,
         sportstatus,
-        data
+        file_url
       )
       VALUES (
         #{id},
@@ -50,7 +50,7 @@
         #{uploadtime},
         #{istestbpbs},
         #{sportstatus},
-        #{data}
+        #{fileUrl}
       )
     </insert>
 
@@ -58,18 +58,12 @@
     <insert id="sedentarySave" parameterType="com.shxseer.watch.model.SedentaryBean">
         INSERT INTO sedentary (
           id,
-          user_id,
+          imei,
           sittime,
           sitduration)
         VALUES (
         #{id},
-          (SELECT
-            a.user_id
-            FROM watch_user_record a
-            LEFT JOIN watch_information b
-            ON a.watch_id = b.id
-            WHERE b.imei = #{imei}
-          ),
+        #{imei},
         #{sittime},
         #{sitduration}
         )
@@ -79,20 +73,14 @@
     <insert id="stepCountSave" parameterType="com.shxseer.watch.model.StepBean">
         INSERT INTO step_data (
         id,
-        user_id,
+        imei,
         stepcount,
-        uploadtime)
-        VALUES (
+        uploadtime
+        ) VALUES (
         #{id},
-        (SELECT
-        a.user_id
-        FROM watch_user_record a
-        LEFT JOIN watch_information b
-        ON a.watch_id = b.id
-        WHERE b.imei = #{imei}
-        )
-        ,#{stepcount}
-        ,#{uploadtime}
+        #{imei},
+        #{stepcount},
+        #{uploadtime}
         )
     </insert>
 
@@ -109,7 +97,84 @@
         WHERE c.imei = #{imei}
         ORDER BY a.create_time
         DESC
-        LIMIT 1
+        LIMIT 0,1
+    </select>
+    <!-- 血糖血压基准值查询 -->
+    <select id="findCommonParams" parameterType="java.lang.String" resultType="com.shxseer.watch.model.CommonParamsBean">
+          SELECT
+            MAX(CASE common_name WHEN 'serverurl' THEN common_value END ) AS serverurl,
+            MAX(CASE common_name WHEN 'interval' THEN common_value END ) AS 'interval',
+            MAX(CASE common_name WHEN 'testtime' THEN common_value END ) AS testtime
+          FROM common_data WHERE common_type='ALL'
+          GROUP BY common_type
     </select>
 
+    <!-- 计步上传 -->
+    <insert id="heartRateDataSave" parameterType="com.shxseer.watch.model.HeartRateDataBean">
+        insert into heart_rate (
+          id,
+          imei,
+          heart,
+          uploadtime,
+          create_time,
+          create_by
+        ) 
+        values
+          (
+            #{id},
+            #{imei},
+            #{heart},
+            #{uploadtime},
+            #{createTime},
+            #{createBy}
+          )
+    </insert>
+
+    <!-- 根据设备号查询用户对应关系 -->
+    <select id="findWatchUserRecordByImei" parameterType="com.shxseer.watch.model.HeartBeatBean" resultType="com.shxseer.watch.model.WatchUserRecordBean">
+          SELECT 
+              wur.id,
+              wur.watch_id as watchId,
+              wur.user_id as userId,
+              wur.update_time as updateTime,
+              wur.create_by as createBy,
+              wur.action_type as actionType,
+              wur.create_time as createTime
+          FROM
+            watch_user_record wur
+          left join watch_information wi on wur.watch_id = wi.id
+          WHERE wi.imei=#{imei}
+          LIMIT 0, 1;
+
+    </select>
+
+    <!-- 根据imei号获取原始数据主键id集合 -->
+    <select id="getWaveIdByimei" parameterType="string" resultType="string">
+        select id from wave_origin_data where imei = #{imei}
+    </select>
+
+    <!-- 根据主键id查询原始数据对象 -->
+    <select id="getWaveDataUpBeanById" parameterType="string" resultType="com.shxseer.watch.model.WaveDataUpBean">
+        SELECT
+            id,
+            imei,
+            sleepy,
+            lrhand,
+            filesize,
+            datanum,
+            starttime,
+            uploadtime,
+            istestbpbs,
+            sportstatus,
+            data
+        FROM wave_origin_data
+        where id = #{waveId}
+    </select>
+
+    <!-- 根据本次测量时间和设备号查询当前用户的上一组数据的主键id -->
+    <select id="getBeforeWaveIdByStarttime" parameterType="java.util.Map" resultType="string">
+        SELECT id FROM wave_origin_data WHERE starttime = (
+        SELECT starttime FROM wave_origin_data WHERE starttime &lt; #{startTime} AND imei = #{imei} ORDER BY starttime DESC LIMIT 1
+        ) AND imei = #{imei}
+    </select>
 </mapper>

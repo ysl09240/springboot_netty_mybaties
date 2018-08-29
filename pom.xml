@@ -71,6 +71,11 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
             <!--<version>2.0.3.RELEASE</version>-->
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.3.2</version>
+        </dependency>
 
         <!-- swagger-springmvc -->
         <dependency>
@@ -100,6 +105,29 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.47</version>
         </dependency>
+
+        <!--算法分析需要的jar-->
+        <dependency>
+            <groupId>org.icefox.wave.filter</groupId>
+            <artifactId>icefox-filter</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.edu.xidian.image.wave.analyzer</groupId>
+            <artifactId>image-analyzer</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.edu.xidian.wave.ppgpreprocessor</groupId>
+            <artifactId>ppgpreprocessor</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.edu.xidian.wave.dspcollection</groupId>
+            <artifactId>dsp-collection</artifactId>
+            <version>1.0</version>
+        </dependency>
+
     </dependencies>
 
 
@@ -120,6 +148,13 @@
                     <mainClass>com.shxseer.watch.Application</mainClass>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+
         </plugins>
     </build>
 

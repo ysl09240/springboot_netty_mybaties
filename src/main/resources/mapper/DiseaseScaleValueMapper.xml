@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shxseer.watch.dao.DiseaseScaleValueMapper">
+    <!-- 病症尺度值mapper实现类
+        @author  zhangliang
+        @since 018-07-31 10:24 -->
+
+    <!-- 添加病症尺度值一 -->
+    <insert id="addDiseaseScaleValueOne" parameterType="com.shxseer.watch.model.DiseaseScaleValueOne">
+        INSERT INTO disease_scale_value_one (
+        id,
+        create_time,
+        update_time,
+        user_id,
+        start_value_scale,
+        start_index_scale,
+        end_value_scale,
+        end_index_scale,
+        center_value_scale,
+        center_index_scale,
+        downcenter_value_scale,
+        downcenter_index_scale,
+        are_scale,
+        width_scale,
+        single_length_scale,
+        speed_scale,
+        aone_value_scale,
+        aone_index_scale,
+        atwo_value_scale,
+        atwo_index_scale,
+        athr_value_scale,
+        athr_index_scale,
+        bone_value_scale,
+        bone_index_scale,
+        average_press_scale
+        )
+        VALUES
+        (
+        #{id},
+        #{createTime},
+        #{updateTime},
+        #{userId},
+        #{startValueScale},
+        #{startIndexScale},
+        #{endValueScale},
+        #{endIndexScale},
+        #{centerValueScale},
+        #{centerIndexScale},
+        #{downcenterValueScale},
+        #{downcenterIndexScale},
+        #{areScale},
+        #{widthScale},
+        #{singleLengthScale},
+        #{speedScale},
+        #{aoneValueScale},
+        #{aoneIndexScale},
+        #{atwoValueScale},
+        #{atwoIndexScale},
+        #{athrValueScale},
+        #{athrIndexScale},
+        #{boneValueScale},
+        #{boneIndexScale},
+        #{averagePressScale}
+        )
+    </insert>
+
+    <!-- 添加病症尺度值二 -->
+    <insert id="addDiseaseScaleValueTwo" parameterType="com.shxseer.watch.model.DiseaseScaleValueTwo">
+        INSERT INTO disease_scale_value_two (
+        id,
+        disease_scale_one_id,
+        btwo_value_scale,
+        btwo_index_scale,
+        bthr_value_scale,
+        bthr_index_scale,
+        cone_value_scale,
+        cone_index_scale,
+        ctwo_value_scale,
+        ctwo_index_scale,
+        hertrate_scale,
+        up_time_scale,
+        down_time_scale,
+        single_wave_length_scale,
+        aone_shallow_up_scale,
+        aone_shallow_dwon_scale,
+        aone_center_up_scale,
+        aone_center_dwon_scale,
+        aone_deep_up_scale,
+        aoneDeepDwonScale,
+        atwo_shallow_up_scale,
+        atwo_shallow_dwon_scale,
+        atwo_center_up_scale,
+        atwo_center_dwon_scale,
+        atwo_deep_up_scale,
+        atwo_deep_dwon_scale,
+        athr_shallow_up_scale,
+        athr_shallow_dwon_scale,
+        athr_center_up_scale,
+        athr_center_dwon_scale,
+        athr_deep_up_scale,
+        athr_deep_dwon_scale
+        )
+        VALUES
+        (
+        #{id},
+        #{diseaseScaleValueOneId},
+        #{btwoValueScale},
+        #{btwoIndexScale},
+        #{bthrValueScale},
+        #{bthrIndexScale},
+        #{coneValueScale},
+        #{coneIndexScale},
+        #{ctwoValueScale},
+        #{ctwoIndexScale},
+        #{hertrateScale},
+        #{upTimeScale},
+        #{downTimeScale},
+        #{singleWaveLengthScale},
+        #{aoneShallowUpScale},
+        #{aoneShallowDwonScale},
+        #{aoneCenterUpScale},
+        #{aoneCenterDwonScale},
+        #{aoneDeepUpScale},
+        #{aoneDeepDwonScale},
+        #{atwoShallowUpScale},
+        #{atwoShallowDwonScale},
+        #{atwoCenterUpScale},
+        #{atwoCenterDwonScale},
+        #{atwoDeepUpScale},
+        #{atwoDeepDwonScale},
+        #{athrShallowUpScale},
+        #{athrShallowDwonScale},
+        #{athrCenterUpScale},
+        #{athrCenterDwonScale},
+        #{athrDeepUpScale},
+        #{athrDeepDwonScale}
+        )
+    </insert>
+
+    <!-- 添加病症尺度值三 -->
+    <insert id="addDiseaseScaleValueThree" parameterType="com.shxseer.watch.model.DiseaseScaleValueThree">
+        INSERT INTO disease_scale_value_three (
+        id,
+        disease_scale_one_id,
+        bone_shallow_up_scale,
+        bone_shallow_dwon_scale,
+        bone_center_up_scale,
+        bone_center_dwon_scale,
+        bone_deep_up_scale,
+        bone_deep_dwon_scale,
+        btwo_shallow_up_scale,
+        btwo_shallow_dwon_scale,
+        btwo_center_up_scale,
+        btwo_center_dwon_scale,
+        btwo_deep_up_scale,
+        btwo_deep_dwon_scale,
+        bthr_shallow_up_scale,
+        bthr_shallow_dwon_scale,
+        bthr_center_up_scale,
+        bthr_center_dwon_scale,
+        bthr_deep_up_scale,
+        bthr_deep_dwon_scale,
+        cone_shallow_up_scale,
+        cone_shallow_dwon_scale,
+        cone_center_up_scale,
+        cone_center_dwon_scale,
+        cone_deep_up_scale,
+        cone_deep_dwon_scale,
+        ctwo_shallow_up_scale,
+        ctwo_shallow_dwon_scale,
+        ctwo_center_up_scale,
+        ctwo_center_dwon_scale,
+        ctwo_deep_up_scale,
+        ctwo_deep_dwon_scale
+        )
+        VALUES
+        (
+        #{id},
+        #{diseaseScaleValueOneId},
+        #{boneShallowUpScale},
+        #{boneShallowDwonScale},
+        #{boneCenterUpScale},
+        #{boneCenterDwonScale},
+        #{boneDeepUpScale},
+        #{boneDeepDwonScale},
+        #{btwoShallowUpScale},
+        #{btwoShallowDwonScale},
+        #{btwoCenterUpScale},
+        #{btwoCenterDwonScale},
+        #{btwoDeepUpScale},
+        #{btwoDeepDwonScale},
+        #{bthrShallowUpScale},
+        #{bthrShallowDwonScale},
+        #{bthrCenterUpScale},
+        #{bthrCenterDwonScale},
+        #{bthrDeepUpScale},
+        #{bthrDeepDwonScale},
+        #{coneShallowUpScale},
+        #{coneShallowDwonScale},
+        #{coneCenterUpScale},
+        #{coneCenterDwonScale},
+        #{coneDeepUpScale},
+        #{coneDeepDwonScale},
+        #{ctwoShallowUpScale},
+        #{ctwoShallowDwonScale},
+        #{ctwoCenterUpScale},
+        #{ctwoCenterDwonScale},
+        #{ctwoDeepUpScale},
+        #{ctwoDeepDwonScale}
+        )
+    </insert>
+
+    <!-- 根据用户id查询此用户的尺度值一对象 -->
+    <select id="getDiseaseScaleValueOneByUserId" parameterType="string" resultType="com.shxseer.watch.model.DiseaseScaleValueOne">
+        SELECT
+        id,
+        create_time as createTime,
+        update_time as updateTime,
+        user_id as userId,
+        start_value_scale as startValueScale,
+        start_index_scale as startIndexScale,
+        end_value_scale as endValueScale,
+        end_index_scale as endIndexScale,
+        center_value_scale as centerValueScale,
+        center_index_scale as centerIndexScale,
+        downcenter_value_scale as downcenterValueScale,
+        downcenter_index_scale as downcenterIndexScale,
+        are_scale as areScale,
+        width_scale as widthScale,
+        single_length_scale as singleLengthScale,
+        speed_scale as speedScale,
+        aone_value_scale as aoneValueScale,
+        aone_index_scale as aoneIndexScale,
+        atwo_value_scale as atwoValueScale,
+        atwo_index_scale as atwoIndexScale,
+        athr_value_scale as athrValueScale,
+        athr_index_scale as athrIndexScale,
+        bone_value_scale as boneValueScale,
+        bone_index_scale as boneIndexScale,
+        average_press_scale as averagePressScale
+        FROM disease_scale_value_one
+        where user_id = #{userId}
+    </select>
+
+    <!-- 根据用户id查询此用户的尺度值二对象 -->
+    <select id="getDiseaseScaleValueTwoByOneId" parameterType="string" resultType="com.shxseer.watch.model.DiseaseScaleValueTwo">
+        SELECT
+        id,
+        disease_scale_one_id as diseaseScaleValueOneId,
+        btwo_value_scale as btwoValueScale,
+        btwo_index_scale as btwoIndexScale,
+        bthr_value_scale as bthrValueScale,
+        bthr_index_scale as bthrIndexScale,
+        cone_value_scale as coneValueScale,
+        cone_index_scale as coneIndexScale,
+        ctwo_value_scale as ctwoValueScale,
+        ctwo_index_scale as ctwoIndexScale,
+        hertrate_scale as hertrateScale,
+        up_time_scale as upTimeScale,
+        down_time_scale as downTimeScale,
+        single_wave_length_scale as singleWaveLengthScale,
+        aone_shallow_up_scale as aoneShallowUpScale,
+        aone_shallow_dwon_scale as aoneShallowDwonScale,
+        aone_center_up_scale as aoneCenterUpScale,
+        aone_center_dwon_scale as aoneCenterDwonScale,
+        aone_deep_up_scale as aoneDeepUpScale,
+        aoneDeepDwonScale as aoneDeepDwonScale,
+        atwo_shallow_up_scale as atwoShallowUpScale,
+        atwo_shallow_dwon_scale as atwoShallowDwonScale,
+        atwo_center_up_scale as atwoCenterUpScale,
+        atwo_center_dwon_scale as atwoCenterDwonScale,
+        atwo_deep_up_scale as atwoDeepUpScale,
+        atwo_deep_dwon_scale as atwoDeepDwonScale,
+        athr_shallow_up_scale as athrShallowUpScale,
+        athr_shallow_dwon_scale as athrShallowDwonScale,
+        athr_center_up_scale as athrCenterUpScale,
+        athr_center_dwon_scale as athrCenterDwonScale,
+        athr_deep_up_scale as athrDeepUpScale,
+        athr_deep_dwon_scale as athrDeepDwonScale
+        FROM disease_scale_value_two
+        where disease_scale_one_id = #{diseaseScaleValueOneId}
+    </select>
+
+    <!-- 根据用户id查询此用户的尺度值三对象 -->
+    <select id="getdiseaseScaleValueThreeByOneId" parameterType="string" resultType="com.shxseer.watch.model.DiseaseScaleValueThree">
+        SELECT
+          id as id,
+          disease_scale_one_id as diseaseScaleValueOneId,
+          bone_shallow_up_scale as boneShallowUpScale,
+          bone_shallow_dwon_scale as boneShallowDwonScale,
+          bone_center_up_scale as boneCenterUpScale,
+          bone_center_dwon_scale as boneCenterDwonScale,
+          bone_deep_up_scale as boneDeepUpScale,
+          bone_deep_dwon_scale as boneDeepDwonScale,
+          btwo_shallow_up_scale as btwoShallowUpScale,
+          btwo_shallow_dwon_scale as btwoShallowDwonScale,
+          btwo_center_up_scale as btwoCenterUpScale,
+          btwo_center_dwon_scale as btwoCenterDwonScale,
+          btwo_deep_up_scale as btwoDeepUpScale,
+          btwo_deep_dwon_scale as btwoDeepDwonScale,
+          bthr_shallow_up_scale as bthrShallowUpScale,
+          bthr_shallow_dwon_scale as bthrShallowDwonScale,
+          bthr_center_up_scale as bthrCenterUpScale,
+          bthr_center_dwon_scale as bthrCenterDwonScale,
+          bthr_deep_up_scale as bthrDeepUpScale,
+          bthr_deep_dwon_scale as bthrDeepDwonScale,
+          cone_shallow_up_scale as coneShallowUpScale,
+          cone_shallow_dwon_scale as coneShallowDwonScale,
+          cone_center_up_scale as coneCenterUpScale,
+          cone_center_dwon_scale as coneCenterDwonScale,
+          cone_deep_up_scale as coneDeepUpScale,
+          cone_deep_dwon_scale as coneDeepDwonScale,
+          ctwo_shallow_up_scale as ctwoShallowUpScale,
+          ctwo_shallow_dwon_scale as ctwoShallowDwonScale,
+          ctwo_center_up_scale as ctwoCenterUpScale,
+          ctwo_center_dwon_scale as ctwoCenterDwonScale,
+          ctwo_deep_up_scale as ctwoDeepUpScale,
+          ctwo_deep_dwon_scale as ctwoDeepDwonScale
+        FROM disease_scale_value_three
+        where disease_scale_one_id = #{diseaseScaleValueOneId}
+    </select>
+
+</mapper>
