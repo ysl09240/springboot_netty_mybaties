@@ -32,4 +32,12 @@ public interface IReportDiseaseService {
      * @param userId
      */
     List<BloodPressValueVo> getBloodPressValueByUserId(String userId);
+
+    /**
+     * 查询当前用户的当天的血黏值
+     * @param userId
+     * @param startTime
+     */
+    List<Double> getDayConsistencyByUserId(String userId, String startTime);
+
 }

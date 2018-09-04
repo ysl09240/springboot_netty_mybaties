@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author frank  braveheart1115@163.com
@@ -35,5 +36,11 @@ public interface ReportDiseaseMapper {
      * @param userId
      */
     List<BloodPressValueVo> getBloodPressValueByUserId(String userId);
+
+    /**
+     * 查询当前用户的当天的血黏值
+     * @param maps
+     */
+    List<Double> getDayConsistencyByUserId(Map<String, String> maps);
 
 }

@@ -1,6 +1,5 @@
 package com.shxseer.watch.algorithm.diseasereport;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.shxseer.watch.algorithm.eigenvalue.EigenvalueUtils;
 import com.shxseer.watch.algorithm.riskassessment.DiseaseGetValue;
@@ -37,7 +36,6 @@ public class DiseaseReportUtils {
         String userId = user.getId();
         JSONObject obj= (JSONObject) result.get("data");
         String VP= (String) obj.get("VP");
-        List<String>  suggestList= (List<String>) obj.get("suggestList");
         String diseaseType= obj.get("diseaseType")+"";
         String riskAssessment=obj.get("riskAssessment")+"";
         String isWarning= obj.get("isWarning")+"";
@@ -58,7 +56,6 @@ public class DiseaseReportUtils {
         reportDisease.setExponent(number);
         reportDisease.setRiskAssessment(riskAssessment);
         reportDisease.setOtherRisk(null);
-        reportDisease.setSuggestList(JSONArray.toJSONString(suggestList).toString());
         reportDisease.setTimeScope(DateUtils.getDateMassge(startTime,0.5f));
         reportDisease.setStartTime(startTime);
         reportDisease.setIsWarning(isWarning);
@@ -93,8 +90,7 @@ public class DiseaseReportUtils {
             reportDisease.setMaxValues(maxValue);
             reportDisease.setMinValue(minValue);
             reportDisease.setEatSataus(eatSataus);
-        }
-        if(code == 14){
+        }else if(code == 14){
             //血压的特殊属性
             double high = (Double) obj.get("high");
             double low = (Double) obj.get("low");
@@ -110,6 +106,12 @@ public class DiseaseReportUtils {
             reportDisease.setMinValue(highMinValue);
             reportDisease.setLowMaxValue(lowMaxValue);
             reportDisease.setLowMinValue(lowMinValue);
+        }else if(code == 18){
+            //血黏值
+            String tem=result.get("bloodGlucoseValue")+"";
+            if(StringUtils.isNotEmpty(tem) && !"null".equals(tem)){
+                reportDisease.setBloodGlucoseValue(Double.parseDouble(tem));
+            }
         }
         return reportDisease;
     }
@@ -122,7 +124,7 @@ public class DiseaseReportUtils {
      */
     public static String concludeRiskAssessment(Map<String, Object> nowEigenValueMap, Map<String, Object> beforeEigenValueMap){
         String riskAssessment = null;
-        if(nowEigenValueMap.isEmpty() || beforeEigenValueMap.isEmpty()){
+        if(nowEigenValueMap == null || beforeEigenValueMap == null){
         }else{
             List<WaveFormModel> nowWaveFormModelList = EigenvalueUtils.newEigenValueToWaveFormModel(nowEigenValueMap);
             List<WaveFormModel> beforeWaveFormModelList = EigenvalueUtils.newEigenValueToWaveFormModel(beforeEigenValueMap);

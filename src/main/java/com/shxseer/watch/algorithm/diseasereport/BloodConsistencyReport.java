@@ -2,14 +2,13 @@ package com.shxseer.watch.algorithm.diseasereport;
 
 import com.alibaba.fastjson.JSONObject;
 import com.shxseer.watch.algorithm.diseasetools.BloodConsistencyUtils;
-import com.shxseer.watch.common.DiseaseEnum;
 import com.shxseer.watch.model.EigenValueThree;
 import com.shxseer.watch.model.MessageType;
 import com.shxseer.watch.model.ReportDisease;
 import com.shxseer.watch.model.User;
 import com.shxseer.watch.utils.IdUtils;
 
-import java.util.ArrayList;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,40 +30,43 @@ public class BloodConsistencyReport {
      * @throws Exception
      */
     public static ReportDisease calculateReportNew(User user, String startTime, Map<String, Object> nowEigenValueMap,
-                                                   Map<String, Object> beforeEigenValueMap) throws Exception {
+                                                   Map<String, Object> beforeEigenValueMap, List<Double> dayConsistencyList) throws Exception {
         JSONObject data = new JSONObject();
         //获取计算指数的条件
         EigenValueThree eigenValueThree = (EigenValueThree) nowEigenValueMap.get("eigenValueThree");
         //病症名称
         String diseaseName = MessageType.RETURN_TYPE_BLOODCONSISTENCY;
         data.put("diseaseName", diseaseName);
-        //指数
+        //血粘值
         double bloodConsistencyValue = BloodConsistencyUtils.getBloodConsistencyValue(eigenValueThree.getPeresistance());
-        data.put("number", bloodConsistencyValue+"");
+        DecimalFormat df = new DecimalFormat("######0.00");
+        bloodConsistencyValue = Double.parseDouble(df.format(bloodConsistencyValue));
+        //指数
+        dayConsistencyList.add(bloodConsistencyValue);
+        Map<String, String> returnData = BloodConsistencyUtils.getLossGo(dayConsistencyList);
+        data.put("number", returnData.get("number"));
         //状态
-        String VP = DiseaseEnum.BLOODSUGAR_NOMAL.getValue();
-        data.put("VP", VP);
+        data.put("VP", returnData.get("VP"));
         //病症分级
-        String diseaseType = "目前处于正常状态，请继续保持。";
+        String diseaseType = "--";
         data.put("diseaseType", diseaseType);
-        //病症建议
-        List<String> suggestList = new ArrayList<String>();
-        suggestList.add("请保持！");
-        data.put("suggestList", suggestList);
         //是否提示预警
         /*if(DiseaseEnum.BLOODSUGAR_UP.getValue().equals(VP)){
             data.put("isWarning",1);
             data.put("pushMessage","建议您适当提高血液粘稠度。查看详情>>");
             data.put("WarningDiseaseTypeName","提高血液粘稠度");
         }else{
+            data.put("isWarning",0);
         }*/
         data.put("isWarning",0);
-		//风险评估
+        //风险评估
         String riskAssessment = DiseaseReportUtils.concludeRiskAssessment(nowEigenValueMap, beforeEigenValueMap);
         data.put("riskAssessment", riskAssessment);
 
         Map<String,Object> maps = new HashMap<String,Object>(2);
         maps.put("data", data);
+        //将血黏值存放进血糖参数定量值字段中
+        maps.put("bloodGlucoseValue", bloodConsistencyValue);
 
         ReportDisease reportDisease = DiseaseReportUtils.returnFinalResultBean(user,maps,startTime,"18");
         reportDisease.setId(IdUtils.uuid());

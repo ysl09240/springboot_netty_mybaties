@@ -56,6 +56,9 @@ public class TestController {
     @Autowired
     private IDiseaseScaleValueService diseaseScaleValueService;
 
+    @Autowired
+    private IDiseaseTipsService diseaseTipsService;
+
     @RequestMapping(value = "/calculateReport", method= RequestMethod.GET)
     @ApiOperation(value = "测试是否能生成报告", notes = "author：zhangliang")
     @ApiImplicitParams({
@@ -68,6 +71,9 @@ public class TestController {
             User user = userService.queryUserByImei(imei);
             String userId = user.getId();
 
+            /**
+             * 尺度值计算部分
+             */
             //查询病症计算所需的尺度值
             Map<String, Object> diseaseScaleMap = diseaseScaleValueService.getDiseaseScaleValueByUserId(userId);
             if(diseaseScaleMap == null) {
@@ -126,9 +132,15 @@ public class TestController {
             }
             //病症尺度值map对象
             userWaveVo.setDiseaseScaleMap(diseaseScaleMap);
+            //当前用户的当天的血黏值
+            List<Double> dayConsistencyList = reportDiseaseService.getDayConsistencyByUserId(userId, startTime);
+            userWaveVo.setDayConsistencyList(dayConsistencyList);
 
+            /**
+             * 病症即时报告部分
+             */
             Map<String,Object> diseaseMap = new HashMap<>();
-            //血糖报告
+            /** 血糖报告 */
             //获取当前用户以往测过的血糖参数定量值
             List<Double> bloodValueList = reportDiseaseService.getBloodGlucoseValueByUserId(userId);
             ReportDisease reportDisease = null;
@@ -144,14 +156,20 @@ public class TestController {
                 }
             }
             if(reportDisease != null) {
+                //处理病症建议
+                String suggestList = diseaseTipsService.getRandomDiseaseTips("3");
+                reportDisease.setSuggestList(suggestList);
                 diseaseMap.put(MessageType.RETURN_TYPE_BLOODSUGAR, reportDisease);
             }
-            //疲劳报告
+            /** 疲劳报告 */
             reportDisease = commandService.calculateTeriodReport(userWaveVo);
             if(reportDisease != null) {
+                //处理病症建议
+                String suggestList = diseaseTipsService.getRandomDiseaseTips("0");
+                reportDisease.setSuggestList(suggestList);
                 diseaseMap.put(MessageType.RETURN_TYPE_TERIOD, reportDisease);
             }
-            //血压报告
+            /** 血压报告 */
             //获取当前用户以往测过的高压值和低压值
             List<BloodPressValueVo> bloodPressList = reportDiseaseService.getBloodPressValueByUserId(userId);
             if(bloodPressList != null){
@@ -161,16 +179,29 @@ public class TestController {
                 //计算血压报告
                 reportDisease = commandService.calculateBloodPressReport(userWaveVo);
                 if(size < (Constant.BASICKMEANS_VALUE - 1)){
-                    //这里不用size的原因:在下面的工具类中给bloodPressList添加了一个值
-                    log.info("目前血压的高压和低压值数量为"+bloodPressList.size()+"，少于计算个性化区间的最少数量，报告初始化中");
+                    log.info("目前血压的高压和低压值数量为"+(size + 1)+"，少于计算个性化区间的最少数量，报告初始化中");
                 }
             }
             if(reportDisease != null) {
+                //处理病症建议
+                String suggestList = diseaseTipsService.getRandomDiseaseTips("14");
+                reportDisease.setSuggestList(suggestList);
                 diseaseMap.put(MessageType.RETURN_TYPE_HIGHANDLOW, reportDisease);
             }
-            //血液粘稠度报告
+            /** 运动预警报告 */
+            reportDisease = commandService.calculateSportHertRateReport(userWaveVo);
+            if(reportDisease != null) {
+                //处理病症建议
+                String suggestList = diseaseTipsService.getRandomDiseaseTips("17");
+                reportDisease.setSuggestList(suggestList);
+                diseaseMap.put(MessageType.RETURN_TYPE_SPORTHERTRATE, reportDisease);
+            }
+            /** 血液粘稠度报告 */
             reportDisease = commandService.calculateBloodConsistencyReport(userWaveVo);
             if(reportDisease != null) {
+                //处理病症建议
+                String suggestList = diseaseTipsService.getRandomDiseaseTips("18");
+                reportDisease.setSuggestList(suggestList);
                 diseaseMap.put(MessageType.RETURN_TYPE_BLOODCONSISTENCY, reportDisease);
             }
 

@@ -1,13 +1,13 @@
 package com.shxseer.watch.algorithm.diseasereport;
 
 import com.alibaba.fastjson.JSONObject;
+import com.shxseer.watch.algorithm.diseasereport.reportutils.DiseaseSuggest;
 import com.shxseer.watch.algorithm.diseasetools.FatigueComputeUtils;
 import com.shxseer.watch.common.Constant;
 import com.shxseer.watch.common.SplitData;
 import com.shxseer.watch.model.*;
 import com.shxseer.watch.utils.IdUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,29 +36,28 @@ public class TeriodReport {
         List<Integer> singleWaveLengthList = SplitData.stringToIntegerList(eigenValueOne.getSingleWaveLength(), Constant.EIGENVALUE_SPLIT);
         int singleWaveLength = SplitData.countIntegerListAvg(singleWaveLengthList);
         int centerDenty = getCenterDenty(nowEigenValueMap);
+        String regex = Constant.EIGENVALUE_SPLIT;
+        List<Integer> heartRateList = SplitData.stringToIntegerList(eigenValueOne.getHeartRate(), regex);
         //病症名称
         String diseaseName = MessageType.RETURN_TYPE_TERIOD;
         data.put("diseaseName", diseaseName);
-        String returnData = FatigueComputeUtils.getFatigueValue(singleWaveLength, centerDenty);
+        Map<String,String> returnData = FatigueComputeUtils.getFatigueValue(heartRateList,singleWaveLength, centerDenty);
         //指数
-        int number = 0;
-        data.put("number", number+"");
+        String number = returnData.get("number");
+        data.put("number", number);
         //状态
-        String VP = returnData;
+        String VP = returnData.get("VP");
         data.put("VP", VP);
         //病症分级
-        String diseaseType = "目前处于正常状态，请继续保持。";
-        data.put("diseaseType", diseaseType);
-        //病症建议
-        List<String> suggestList = new ArrayList<String>();
-        suggestList.add("请保持！");
-        data.put("suggestList", suggestList);
+        Map<String,Object> dsmaps = DiseaseSuggest.tiredSuggest(Integer.parseInt(number));
+        data.put("diseaseType", dsmaps.get("diseaseType"));
         //是否提示预警
         /*if(DiseaseEnum.BLOODSUGAR_UP.getValue().equals(VP)){
             data.put("isWarning",1);
             data.put("pushMessage","建议您适当休息。查看详情>>");
             data.put("WarningDiseaseTypeName","适当休息一会");
         }else{
+            data.put("isWarning",0);
         }*/
         data.put("isWarning",0);
         //风险评估

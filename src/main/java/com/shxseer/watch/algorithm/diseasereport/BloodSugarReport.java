@@ -9,7 +9,10 @@ import com.shxseer.watch.common.Constant;
 import com.shxseer.watch.common.SplitData;
 import com.shxseer.watch.model.*;
 import com.shxseer.watch.utils.IdUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +24,9 @@ import java.util.Map;
  * @since 2018-07-17 10:43
  */
 public class BloodSugarReport {
+
+    private static Logger log = LoggerFactory.getLogger(BloodSugarReport.class);
+
     /**
      * 血糖即时报告
      * @param user 用户
@@ -52,8 +58,7 @@ public class BloodSugarReport {
         List<Double> downcenterValueList = SplitData.stringToDoubleList(eigenValueOne.getDowncenterValue(), regex);
         double downcenterValue = SplitData.countDoubleListAvg(downcenterValueList);
         //血糖参数定量值
-        Map<String, Object> returnMap = BloodSugarUtils.getPointSugar(centerValue, bloodGlucose,
-                altitudeScale, speedScale, jzxScale, speed, downcenterValue);
+        Map<String, Object> returnMap = BloodSugarUtils.getNumBlood(bloodGlucose, centerValue, altitudeScale+"");
         //血糖参数定量值
         double bloodGlucoseValue = (Double) returnMap.get("d_value");
         //用餐状态（0：餐前/1：餐后）
@@ -68,11 +73,12 @@ public class BloodSugarReport {
         List<String> suggestList = new ArrayList<String>();
         if(bloodValueArray.size() >= Constant.BASICKMEANS_VALUE){
             Htest h=new Htest();
-            double[] res = h.getFade(bloodValueArray, Constant.BASICKMEANS_VALUE);
+            double[] res = h.getFade(bloodValueArray,Constant.BASICKMEANS_VALUE);
             //个性化区间上限
-            maxValue = res[1];
+            DecimalFormat df = new DecimalFormat("######0.0");
+            maxValue = Double.parseDouble(df.format(res[1]));
             //个性化区间下限
-            minValue = res[0];
+            minValue = Double.parseDouble(df.format(res[0]));
             //个性化风险等级
             VP = TextPlan.getSugarTextPlan(minValue, maxValue, bloodGlucoseValue);
             //2、返回状态、分级、建议
@@ -80,26 +86,13 @@ public class BloodSugarReport {
             //病症的等级
             //病症等级的状态
             diseaseType = (String) bloodSugarMaps.get("diseaseType");
-            String dietSuggest = (String) bloodSugarMaps.get("dietSuggest");
-            String healthProtectionSuggest = (String) bloodSugarMaps.get("healthProtectionSuggest");
-            String otherSuggest = (String) bloodSugarMaps.get("otherSuggest");
-            if(dietSuggest!=null){
-                suggestList.add(dietSuggest);
-            }
-            if(healthProtectionSuggest!=null){
-                suggestList.add(healthProtectionSuggest);
-            }
-            if(otherSuggest!=null){
-                suggestList.add(otherSuggest);
-            }
         }
-		//将建议集合返回给前端，不管有没有都要返回（上面的suggest先不要删）
+        //将建议集合返回给前端，不管有没有都要返回（上面的suggest先不要删）
         if(suggestList.size()==0){
             suggestList.add("请保持！");
         }
         //实例化maps里要放的json对象data
         JSONObject data = new JSONObject();
-        data.put("suggestList", suggestList);
         data.put("diseaseType", diseaseType);
         //目前血糖里没用到number，但是其他病症用到了所以得有一个默认值
         data.put("number", "0");
@@ -116,6 +109,7 @@ public class BloodSugarReport {
             data.put("pushMessage","血糖存在糖尿病风险，建议就医，查看详情>>");
             data.put("WarningDiseaseTypeName","糖尿病风险");
         }else{
+            data.put("isWarning",0);
         }*/
         data.put("isWarning",0);
 

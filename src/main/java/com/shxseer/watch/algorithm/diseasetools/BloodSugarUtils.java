@@ -10,59 +10,65 @@ import java.util.Map;
  */
 public class BloodSugarUtils {
     /**
-     *
-     * @param thisAltitude//本次振幅
-     * @param sugarBenchmark//血糖基准值
-     * @param altitudeScale//振幅尺度
-     * @param speedScale/速度尺度
-     * @param jzxScale//降中峡尺度
-     * @param thisSpeedValue//本次速度
-     * @param thisjzxValue//本次降中峽
+     * 研发血糖算法
+     * @param bloodFirst 血糖基准值
+     * @param HT 本次的振幅均值
+     * @param altitude 振幅尺度
      * @return
      */
-    public static Map<String, Object> getPointSugar(double thisAltitude, double sugarBenchmark, double altitudeScale, double speedScale, double jzxScale,
-                                                    double thisSpeedValue, double thisjzxValue) {
-        Map<String, Object> returnMap = new HashMap<String, Object>(2);
-        //获取每一小份的具体的值
-        double aliquot_value = getTargetValue(sugarBenchmark, altitudeScale);
-        //格式化值
+    public static Map<String, Object> getNumBlood(double bloodFirst, double HT, String altitude) {
+        Map<String, Object> returnMap = new HashMap<String, Object>();
+        double blood_value1 = 0;
+        double aliquot_value = getTargetValue(bloodFirst, altitude, HT);
         double d_value = 0;
-        //計算出來的血糖值
-        double blood_value=0;
         //用餐状态（0：餐前/1：餐后）
         String eatSataus = "0";
-        //餐后(分别取降中峡和速度，主波振幅进行比较)
-        if(speedScale <= thisSpeedValue && jzxScale<=thisjzxValue)
-        {
+        double k = getCoefficient(altitude, HT);
+        if (aliquot_value < 100) {
+            //餐后
             System.out.println("餐后");
             eatSataus = "1";
-            blood_value=thisAltitude*aliquot_value;
-        }
-        else if(speedScale > thisSpeedValue && jzxScale > thisjzxValue)
-        {
+            blood_value1 = bloodFirst + Math.abs(aliquot_value)*k;
+        } else if (aliquot_value > 100) {
             //餐前
             System.out.println("餐前");
-            blood_value=thisAltitude*aliquot_value;
-        }else{
-            blood_value=5;
+            blood_value1 = bloodFirst - Math.abs(aliquot_value)*k;
         }
-        double num1 = Math.abs(blood_value);
+        double num1 = Math.abs(blood_value1);
         DecimalFormat df = new DecimalFormat("######0.00");
         d_value = Double.parseDouble(df.format(num1));
-
         returnMap.put("d_value", d_value);
         returnMap.put("eatSataus", eatSataus);
-
-        return returnMap ;
+        return returnMap;
     }
 
+
     /**
-     * @param sugarBenchmark
-     * @param sugarScale
+     * 通过目标血糖获取每一小等分的具体值，这里需要上传血糖基准值和对应的波势高度差
+     * 获取基准值的每一小等分代表的血糖值
+     *
+     * @param bloodFirst
      * @return
      */
-    public static double getTargetValue(double sugarBenchmark, double sugarScale) {
-        double aliquot = sugarBenchmark / sugarScale;
-        return aliquot;
+    public static double getTargetValue(double bloodFirst, String oldaltitude, double newaltitude) {
+        double aliquot1 = Double.parseDouble(oldaltitude) - newaltitude;
+        return aliquot1;
+    }
+
+    //粘滞度和脉搏波的波形变化对比值系数
+    public static double getCoefficient(String parameter, double altitudeScale) {
+        //粘度血糖系数
+        double k = 0;
+        double mo=10000;
+        double no=980;
+        //本次测量值减去尺度值产生的结果
+        double c_value = altitudeScale - Double.parseDouble(parameter);
+        //如果c_value小于0，那么说明血糖升高，大于0说明血糖减小
+        if (c_value < 0) {
+            k = Math.abs(c_value)/(mo*no)*0.6;
+        } else if (c_value > 0) {
+            k = c_value/(mo*no)*0.6;
+        }
+        return k;
     }
 }

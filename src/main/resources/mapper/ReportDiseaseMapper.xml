@@ -25,4 +25,9 @@
     <select id="getBloodPressValueByUserId" parameterType="string" resultType="com.shxseer.watch.vo.BloodPressValueVo">
         SELECT high_pressure as highPressure, low_pressure as lowPressure FROM report_disease WHERE user_id = #{userId} AND disease_code = 14;
     </select>
+
+    <!-- 查询当前用户的当天的血黏值 -->
+    <select id="getDayConsistencyByUserId" parameterType="string" resultType="double">
+        SELECT blood_glucose_value FROM report_disease WHERE user_id = #{userId} and LEFT (start_time, 10) = #{startTime} AND disease_code = 18;
+    </select>
 </mapper>

@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *  @author frank  braveheart1115@163.com
@@ -75,6 +77,25 @@ public class ReportDiseaseServiceImpl implements IReportDiseaseService {
             returnList = reportDiseaseMapper.getBloodPressValueByUserId(userId);
         } catch (Exception e) {
             log.error("查询当前用户的所有血压的高压和低压值 失败", e);
+        }
+        return returnList;
+    }
+
+    /**
+     * 查询当前用户的当天的血黏值
+     * @param userId
+     * @param startTime
+     */
+    @Override
+    public List<Double> getDayConsistencyByUserId(String userId, String startTime){
+        List<Double> returnList = new ArrayList<>();
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put("userId", userId);
+            paramMap.put("startTime", startTime.substring(0,10));
+            returnList = reportDiseaseMapper.getDayConsistencyByUserId(paramMap);
+        } catch (Exception e) {
+            log.error("查询当前用户的当天的血黏值 失败", e);
         }
         return returnList;
     }

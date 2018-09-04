@@ -1,10 +1,11 @@
 package com.shxseer.watch.algorithm.diseasereport;
 
 import com.alibaba.fastjson.JSONObject;
-import com.shxseer.watch.algorithm.diseasetools.SportHertRateUtils;
+import com.shxseer.watch.algorithm.diseasereport.reportutils.DiseaseSuggest;
+import com.shxseer.watch.algorithm.diseasetools.MovementUtils;
+import com.shxseer.watch.algorithm.eigenvalue.EigenvalueUtils;
+import com.shxseer.watch.algorithm.wavetools.WaveFormModel;
 import com.shxseer.watch.common.Constant;
-import com.shxseer.watch.common.DateUtils;
-import com.shxseer.watch.common.DiseaseEnum;
 import com.shxseer.watch.common.SplitData;
 import com.shxseer.watch.model.EigenValueOne;
 import com.shxseer.watch.model.MessageType;
@@ -12,7 +13,6 @@ import com.shxseer.watch.model.ReportDisease;
 import com.shxseer.watch.model.User;
 import com.shxseer.watch.utils.IdUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,23 +41,20 @@ public class SportHertRateReport {
         String regex = Constant.EIGENVALUE_SPLIT;
         List<Integer> heartRateList = SplitData.stringToIntegerList(eigenValueOne.getHeartRate(), regex);
         int heartRate = SplitData.countIntegerListAvg(heartRateList);
-        int age = DateUtils.getAgeByDate(user.getBirthday());
+        List<WaveFormModel> nowWaveFormModelList = EigenvalueUtils.newEigenValueToWaveFormModel(nowEigenValueMap);
+        List<WaveFormModel> beforeWaveFormModelList = EigenvalueUtils.newEigenValueToWaveFormModel(beforeEigenValueMap);
         //病症名称
         String diseaseName = MessageType.RETURN_TYPE_SPORTHERTRATE;
         data.put("diseaseName", diseaseName);
         //指数
-        int number = SportHertRateUtils.getSportHertRate(heartRate, age);
-        data.put("number", number+"");
+        Map<String, String> returnData = MovementUtils.getMovementValue(heartRate, nowWaveFormModelList.get(0), beforeWaveFormModelList.get(0));
+        String number = returnData.get("number");
+        data.put("number", number);
         //状态
-        String VP = DiseaseEnum.BLOODSUGAR_NOMAL.getValue();
-        data.put("VP", VP);
+        data.put("VP", returnData.get("VP"));
         //病症分级
-        String diseaseType = "目前处于正常状态，请继续保持。";
-        data.put("diseaseType", diseaseType);
-        //病症建议
-        List<String> suggestList = new ArrayList<String>();
-        suggestList.add("请保持！");
-        data.put("suggestList", suggestList);
+        Map<String,Object> returnMap = DiseaseSuggest.judgeSportHertRate(Integer.parseInt(number));
+        data.put("diseaseType", returnMap.get("diseaseType"));
         //是否提示预警
         /*if(DiseaseEnum.BLOODSUGAR_UP.getValue().equals(VP)){
             data.put("isWarning",1);

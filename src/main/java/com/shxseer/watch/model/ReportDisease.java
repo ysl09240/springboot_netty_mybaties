@@ -29,7 +29,7 @@ public class ReportDisease {
     private String headPortrait;       //  图像
 
     //2017-11-13 添加 血糖参数定量
-    private double bloodGlucoseValue; //餐前或餐后血糖参数定量值
+    private double bloodGlucoseValue; //餐前或餐后血糖参数定量值or血液粘稠度
     private List<BloodGlucoseValueVo> bloodGlucoseValueList; //餐前或餐后血糖参数定量值
     private List<ReportDiseaseCurveVo> bloodPressureValueList; //血压参数值 高压,低压,压差
     private String highPressure; //血压高压

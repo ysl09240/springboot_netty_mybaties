@@ -12,7 +12,10 @@ import com.shxseer.watch.model.ReportDisease;
 import com.shxseer.watch.model.User;
 import com.shxseer.watch.utils.IdUtils;
 import com.shxseer.watch.vo.BloodPressValueVo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +27,8 @@ import java.util.Map;
  * @since 2018-08-13 17:06
  */
 public class BloodPressReport {
+
+    private static Logger log = LoggerFactory.getLogger(BloodPressReport.class);
 
     /**
      * 血压即时报告
@@ -38,7 +43,7 @@ public class BloodPressReport {
                                                    String lowPressure, Map<String, Object> nowEigenValueMap,
                                                    Map<String, Object> beforeEigenValueMap, List<BloodPressValueVo> bloodPressList,
                                                    double averagePressScale
-    ) throws Exception {
+            ) throws Exception {
         JSONObject data = new JSONObject();
         //获取计算指数的条件
         EigenValueFive eigenValueFive = (EigenValueFive) nowEigenValueMap.get("eigenValueFive");
@@ -64,30 +69,34 @@ public class BloodPressReport {
         double highMinValue = 0;
         double lowMaxValue = 0;
         double lowMinValue = 0;
-        for(BloodPressValueVo bp : bloodPressList){
-            highList.add(Double.parseDouble(bp.getHighPressure()));
-            lowList.add(Double.parseDouble(bp.getLowPressure()));
+        if(bloodPressList != null && bloodPressList.size() > 0){
+            for(BloodPressValueVo bp : bloodPressList){
+                highList.add(Double.parseDouble(bp.getHighPressure()));
+                lowList.add(Double.parseDouble(bp.getLowPressure()));
+            }
         }
         highList.add(thisHigh);
         lowList.add(thisLow);
-        if(highList.size() >= Constant.BASICKMEANS_VALUE){
+        if(highList.size() >= Constant.BASICKMEANS_VALUE && highList.size() >= Constant.BASICKMEANS_VALUE){
             Htest h=new Htest();
-            double[] highRes = h.getFade(highList,Constant.BASICKMEANS_VALUE);
+            double[] highRes = h.getFade(highList, Constant.BASICKMEANS_VALUE);
+            DecimalFormat df = new DecimalFormat("######0");
             //高压个性化区间上限
-            highMaxValue = highRes[1];
+            highMaxValue = Double.parseDouble(df.format(highRes[1]));
             //高压个性化区间下限
-            highMinValue = highRes[0];
+            highMinValue = Double.parseDouble(df.format(highRes[0]));
             double[] lowRes = h.getFade(lowList,Constant.BASICKMEANS_VALUE);
             //低压个性化区间上限
-            lowMaxValue = lowRes[1];
+            lowMaxValue = Double.parseDouble(df.format(lowRes[1]));
             //低压个性化区间下限
-            lowMinValue = lowRes[0];
-            data.put("highMaxValue", highMaxValue);
-            data.put("highMinValue", highMinValue);
-            data.put("lowMaxValue", lowMaxValue);
-            data.put("lowMinValue", lowMinValue);
+            lowMinValue = Double.parseDouble(df.format(lowRes[0]));
             //个性化风险等级
         }
+
+        data.put("highMaxValue", highMaxValue);
+        data.put("highMinValue", highMinValue);
+        data.put("lowMaxValue", lowMaxValue);
+        data.put("lowMinValue", lowMinValue);
         int number = 0;
         data.put("number", number+"");
         Map<String,Object> bloodShowMaps = DiseaseSuggest.judgeBloodShow(number);
@@ -95,19 +104,8 @@ public class BloodPressReport {
         String VP = (String) bloodShowMaps.get("result");
         data.put("VP", VP);
         //病症分级
-        String diseaseType = (String) bloodShowMaps.get("diseaseType");;
+        String diseaseType = (String) bloodShowMaps.get("diseaseType");
         data.put("diseaseType", diseaseType);
-        //病症建议
-        List<String> suggestList = new ArrayList<String>();
-        String dietSuggest = (String) bloodShowMaps.get("dietSuggest");
-        String sportSuggest = (String) bloodShowMaps.get("sportSuggest");
-        if(dietSuggest!=null){
-            suggestList.add(dietSuggest);
-        }
-        if(sportSuggest!=null){
-            suggestList.add(sportSuggest);
-        }
-        data.put("suggestList", suggestList);
         //是否提示预警
         /*if(VP.equals("三级高血压")){
             data.put("isWarning",1);

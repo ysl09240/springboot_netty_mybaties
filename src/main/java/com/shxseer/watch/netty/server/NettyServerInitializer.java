@@ -34,7 +34,7 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
         pipeline.addLast(new DelimiterBasedFrameDecoder(Integer.MAX_VALUE, buf));
         pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
         pipeline.addLast(new NettyServerHandler());
-        pipeline.addLast(new FileServerHandler());
+//        pipeline.addLast(new FileServerHandler());
     }
 
 }

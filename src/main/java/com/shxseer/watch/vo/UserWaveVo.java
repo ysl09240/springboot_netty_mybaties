@@ -26,6 +26,7 @@ public class UserWaveVo {
     private List<Double> bloodValueArray;      //当前用户之前的所有血糖参数定量值
     private Map<String,Object> diseaseScaleMap;  //病症尺度值对象
     private List<BloodPressValueVo> bloodPressList;      //当前用户的所有血压的高压和低压值
+    private List<Double> dayConsistencyList;      //当前用户的当天的血黏值
 
     public User getUser() {
         return user;
@@ -131,6 +132,14 @@ public class UserWaveVo {
         this.bloodPressList = bloodPressList;
     }
 
+    public List<Double> getDayConsistencyList() {
+        return dayConsistencyList;
+    }
+
+    public void setDayConsistencyList(List<Double> dayConsistencyList) {
+        this.dayConsistencyList = dayConsistencyList;
+    }
+
     @Override
     public String toString() {
         return "UserWaveVo{" +
@@ -147,6 +156,7 @@ public class UserWaveVo {
                 ", bloodValueArray=" + bloodValueArray +
                 ", diseaseScaleMap=" + diseaseScaleMap +
                 ", bloodPressList=" + bloodPressList +
+                ", dayConsistencyList=" + dayConsistencyList +
                 '}';
     }
 }

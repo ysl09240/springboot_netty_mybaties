@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shxseer.watch.dao.DiseaseTipsMapper" >
+
+    <!-- 查询指定病症下的指定类型的建议文案 -->
+    <select id="selectDiseaseTips" parameterType="java.util.Map" resultType="string">
+        SELECT content FROM disease_tips d WHERE d.disease_code= #{diseaseCode} AND d.type =#{type}
+    </select>
+
+</mapper>

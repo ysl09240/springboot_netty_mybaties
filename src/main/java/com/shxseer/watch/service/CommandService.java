@@ -82,6 +82,12 @@ public interface CommandService {
     ReportDisease calculateBloodPressReport(UserWaveVo userWaveVo);
 
     /**
+     * 计算运动预警报告
+     * @param userWaveVo
+     */
+    ReportDisease calculateSportHertRateReport(UserWaveVo userWaveVo);
+
+    /**
      * 计算血液粘稠度报告
      * @param userWaveVo
      */

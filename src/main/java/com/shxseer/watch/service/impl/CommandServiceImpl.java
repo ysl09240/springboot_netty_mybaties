@@ -15,6 +15,7 @@ import com.shxseer.watch.dao.UserMapper;
 import com.shxseer.watch.model.*;
 import com.shxseer.watch.service.CommandService;
 import com.shxseer.watch.service.IDiseaseScaleValueService;
+import com.shxseer.watch.service.IDiseaseTipsService;
 import com.shxseer.watch.service.IEigenValueService;
 import com.shxseer.watch.utils.FileUtils;
 import com.shxseer.watch.utils.HttpUtils;
@@ -69,6 +70,9 @@ public class CommandServiceImpl implements CommandService {
 
     @Autowired
     IDiseaseScaleValueService diseaseScaleValueService;
+
+    @Autowired
+    IDiseaseTipsService diseaseTipsService;
 
     @Override
     public DrugStoreVo findDrugStore(String id) {
@@ -293,6 +297,13 @@ public class CommandServiceImpl implements CommandService {
         }
         //病症尺度值map对象
         vo.setDiseaseScaleMap(diseaseScaleMap);
+        //当前用户的当天的血黏值
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("userId", userId);
+        paramMap.put("startTime", vo.getStartTime().substring(0,10));
+        List<Double> dayConsistencyList = reportDiseaseMapper.getDayConsistencyByUserId(paramMap);
+        vo.setDayConsistencyList(dayConsistencyList);
+
         /** 血糖报告 */
         //获取当前用户以往测过的血糖参数定量值
         List<Double> bloodValueList = reportDiseaseMapper.getBloodGlucoseValueByUserId(userId);
@@ -308,11 +319,17 @@ public class CommandServiceImpl implements CommandService {
             }
         }
         if(reportDisease != null){
+            //处理病症建议
+            String suggestList = diseaseTipsService.getRandomDiseaseTips("3");
+            reportDisease.setSuggestList(suggestList);
             reportMap.put(MessageType.RETURN_TYPE_BLOODSUGAR,reportDisease);
         }
         /** 疲劳报告 */
         reportDisease = calculateTeriodReport(vo);
         if(reportDisease != null) {
+            //处理病症建议
+            String suggestList = diseaseTipsService.getRandomDiseaseTips("0");
+            reportDisease.setSuggestList(suggestList);
             reportMap.put(MessageType.RETURN_TYPE_TERIOD, reportDisease);
         }
         /** 血压报告 */
@@ -325,16 +342,29 @@ public class CommandServiceImpl implements CommandService {
             //计算血压报告
             reportDisease = calculateBloodPressReport(vo);
             if(size < (Constant.BASICKMEANS_VALUE - 1)){
-                //这里不用size的原因:在下面的工具类中给bloodPressList添加了一个值
-                logger.info("目前血压的高压和低压值数量为"+bloodPressList.size()+"，少于计算个性化区间的最少数量，报告初始化中");
+                logger.info("目前血压的高压和低压值数量为"+(size + 1)+"，少于计算个性化区间的最少数量，报告初始化中");
             }
         }
         if(reportDisease != null) {
+            //处理病症建议
+            String suggestList = diseaseTipsService.getRandomDiseaseTips("14");
+            reportDisease.setSuggestList(suggestList);
             reportMap.put(MessageType.RETURN_TYPE_HIGHANDLOW, reportDisease);
+        }
+        /** 运动预警报告 */
+        reportDisease = calculateSportHertRateReport(vo);
+        if(reportDisease != null) {
+            //处理病症建议
+            String suggestList = diseaseTipsService.getRandomDiseaseTips("17");
+            reportDisease.setSuggestList(suggestList);
+            reportMap.put(MessageType.RETURN_TYPE_SPORTHERTRATE, reportDisease);
         }
         /** 血液粘稠度报告 */
         reportDisease = calculateBloodConsistencyReport(vo);
         if(reportDisease != null) {
+            //处理病症建议
+            String suggestList = diseaseTipsService.getRandomDiseaseTips("18");
+            reportDisease.setSuggestList(suggestList);
             reportMap.put(MessageType.RETURN_TYPE_BLOODCONSISTENCY, reportDisease);
         }
 
@@ -481,6 +511,27 @@ public class CommandServiceImpl implements CommandService {
     }
 
     /**
+     * 计算运动预警报告
+     * @param userWaveVo
+     * @return
+     */
+    @Override
+    public ReportDisease calculateSportHertRateReport(UserWaveVo userWaveVo){
+        try {
+            ReportDisease reportDisease = SportHertRateReport.calculateReportNew(
+                    userWaveVo.getUser(),
+                    userWaveVo.getStartTime(),
+                    userWaveVo.getNowEigenValueMap(),
+                    userWaveVo.getBeforeEigenValueMap());
+            logger.info("计算运动预警报告 成功");
+            return reportDisease;
+        } catch (Exception e) {
+            logger.error("计算运动预警报告 失败",e);
+        }
+        return null;
+    }
+
+    /**
      * 计算血液粘稠度报告
      * @param userWaveVo
      * @return
@@ -492,7 +543,8 @@ public class CommandServiceImpl implements CommandService {
                     userWaveVo.getUser(),
                     userWaveVo.getStartTime(),
                     userWaveVo.getNowEigenValueMap(),
-                    userWaveVo.getBeforeEigenValueMap());
+                    userWaveVo.getBeforeEigenValueMap(),
+                    userWaveVo.getDayConsistencyList());
             logger.info("计算血液粘稠度报告 成功");
             return reportDisease;
         } catch (Exception e) {

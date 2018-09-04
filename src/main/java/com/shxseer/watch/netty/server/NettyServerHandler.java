@@ -126,7 +126,6 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
             }
             CommonQueue.addMsg(msg);
             channel.flush();
-            return;
               //可以发送到下一个handler
 //            ctx.fireChannelRead(msg);
     }
