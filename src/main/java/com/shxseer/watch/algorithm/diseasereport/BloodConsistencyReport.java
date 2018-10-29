@@ -1,6 +1,7 @@
 package com.shxseer.watch.algorithm.diseasereport;
 
 import com.alibaba.fastjson.JSONObject;
+import com.shxseer.watch.algorithm.diseasereport.reportutils.DiseaseSuggest;
 import com.shxseer.watch.algorithm.diseasetools.BloodConsistencyUtils;
 import com.shxseer.watch.model.EigenValueThree;
 import com.shxseer.watch.model.MessageType;
@@ -42,14 +43,14 @@ public class BloodConsistencyReport {
         DecimalFormat df = new DecimalFormat("######0.00");
         bloodConsistencyValue = Double.parseDouble(df.format(bloodConsistencyValue));
         //指数
-        dayConsistencyList.add(bloodConsistencyValue);
-        Map<String, String> returnData = BloodConsistencyUtils.getLossGo(dayConsistencyList);
-        data.put("number", returnData.get("number"));
+        data.put("number", "0");
         //状态
-        data.put("VP", returnData.get("VP"));
+        dayConsistencyList.add(bloodConsistencyValue);
+        String VP = BloodConsistencyUtils.getLossGo(dayConsistencyList);
+        data.put("VP", VP);
         //病症分级
-        String diseaseType = "--";
-        data.put("diseaseType", diseaseType);
+        Map<String,Object> returnMap = DiseaseSuggest.judgeBloodConsistency(VP);
+        data.put("diseaseType", returnMap.get("diseaseType"));
         //是否提示预警
         /*if(DiseaseEnum.BLOODSUGAR_UP.getValue().equals(VP)){
             data.put("isWarning",1);
@@ -59,7 +60,7 @@ public class BloodConsistencyReport {
             data.put("isWarning",0);
         }*/
         data.put("isWarning",0);
-        //风险评估
+		//风险评估
         String riskAssessment = DiseaseReportUtils.concludeRiskAssessment(nowEigenValueMap, beforeEigenValueMap);
         data.put("riskAssessment", riskAssessment);
 

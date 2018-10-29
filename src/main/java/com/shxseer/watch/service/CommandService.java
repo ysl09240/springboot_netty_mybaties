@@ -17,7 +17,7 @@ public interface CommandService {
     /**
      * 波形保存
      */
-    WaveDataUpBean waveSave(WaveDataUpBean waveDataUpBean,User user);
+    WaveDataUpBean waveSave(WaveDataUpBean waveDataUpBean,User user) throws Exception;
 
     /**
      * 久坐提醒上传
@@ -30,10 +30,7 @@ public interface CommandService {
      */
     void stepCountSave(StepBean stepBean);
 
-    /**
-     * 血糖血压基准值是否有效判断
-     */
-    String bloodBaseIsValid(BloodBaselineBean bloodBaselineBean);
+
 
     /**
      * 查询公共参数
@@ -60,7 +57,7 @@ public interface CommandService {
      * @param waveDataUpBean
      * @return
      */
-    Object waveDealData(WaveDataUpBean waveDataUpBean,User user);
+    Object waveDealData(WaveDataUpBean waveDataUpBean,User user) throws Exception;
 
 
     /**
@@ -94,6 +91,13 @@ public interface CommandService {
     ReportDisease calculateBloodConsistencyReport(UserWaveVo userWaveVo);
 
     /**
+     * 计算K值报告
+     * @param userWaveVo
+     * @return
+     */
+    ReportDisease calculateKvalueReport(UserWaveVo userWaveVo);
+
+    /**
      * 根据imei号获取原始数据主键id集合
      */
     List<String> getWaveIdByimei(String imei);
@@ -113,10 +117,11 @@ public interface CommandService {
      */
     String getBeforeWaveIdByStarttime(String imei, double startTime);
 
+
     /**
-     * 根据imei查询用户
-     * @param imei
+     * 是否开始测量
+     * @param bloodBaselineBean
      * @return
      */
-    User queryUserByImei(String imei);
+    BloodBaselineBean isStartMeasure(BloodBaselineBean bloodBaselineBean);
 }

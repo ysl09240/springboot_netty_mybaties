@@ -3,9 +3,9 @@ package com.shxseer.watch.controller;
 import com.alibaba.fastjson.JSON;
 import com.shxseer.watch.common.InvokeResult;
 import com.shxseer.watch.common.RedisDBHelper;
+import com.shxseer.watch.model.BloodBaselineBean;
 import com.shxseer.watch.model.DirectionBean;
 import com.shxseer.watch.model.MessageType;
-import com.shxseer.watch.model.WaveDataUpBean;
 import com.shxseer.watch.netty.server.NettyUtils;
 import com.shxseer.watch.service.CommandService;
 import com.shxseer.watch.utils.HttpUtils;
@@ -40,14 +40,15 @@ public class CommandController {
     @Autowired
     RedisDBHelper redisDBHelper;
 
-    @RequestMapping("/hello")
+    @RequestMapping(value = "/hello" ,method= RequestMethod.POST)
+    @ApiOperation(value = "指令下发接口", notes = "author：yangsonglin")
     @ResponseBody
-    public DrugStoreVo hello(@RequestParam String id) {
-        logger.debug(String.valueOf(redisDBHelper.get("aaaaa")));
-        Map<String,Object> map = new HashMap<>();
-        map.put("id","11111");
-        HttpUtils.doPost("http://localhost:8082/hello",map);
-        return commandService.findDrugStore(id);
+    public String hello(@RequestParam String id) {
+//        logger.debug(String.valueOf(redisDBHelper.get("aaaaa")));
+        BloodBaselineBean bloodBaselineBean = new BloodBaselineBean();
+        bloodBaselineBean.setImei("333333333333333");
+        Object obj = commandService.isStartMeasure(bloodBaselineBean);
+        return JSON.toJSONString(obj);
     }
 
 
@@ -62,16 +63,16 @@ public class CommandController {
     public String direct(DirectionBean directionBean){
         InvokeResult result = new InvokeResult();
         String imei = directionBean.getImei();
-        String channelId = String.valueOf(redisDBHelper.hashGet(MessageType.IMEI_AND_CHANEL_MAP,imei));
+        String channelId = (String) redisDBHelper.hashGet(MessageType.IMEI_AND_CHANEL_MAP,imei);
 
         if(StringUtils.isEmpty(channelId)){
             result.setCode(0); //false
             result.setMessage("指令下发错误，手表连接己断开");
             return JSON.toJSONString(result);
         }
+        NettyUtils.pushMsg(channelId,JSON.toJSONString(directionBean)+MessageType.STOP_LINE);
         result.setCode(1); //true
         result.setMessage("指令己发送");
-        NettyUtils.pushMsg(channelId,JSON.toJSONString(directionBean)+MessageType.STOP_LINE);
 
         return JSON.toJSONString(result);
     }

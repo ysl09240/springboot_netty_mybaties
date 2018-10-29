@@ -16,11 +16,11 @@ public class TextPlan {
      * @param sugarValue//本次血糖值
      * @return
      */
-    public static String getSugarTextPlan(double downValue, double upValue, double sugarValue){
+    public static String getSugarTextPlan(double downValue,double upValue,double sugarValue){
         String str=null;
         if(sugarValue<downValue){
             str = DiseaseEnum.BLOODSUGAR_DOWN.getValue();
-        }else if(sugarValue>downValue && sugarValue<upValue){
+        }else if(sugarValue>=downValue && sugarValue<=upValue){
             str = DiseaseEnum.BLOODSUGAR_NOMAL.getValue();
         }else if(sugarValue>upValue){
             str = DiseaseEnum.BLOODSUGAR_UP.getValue();

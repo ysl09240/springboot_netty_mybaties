@@ -9,6 +9,8 @@ import com.shxseer.watch.model.*;
 import com.shxseer.watch.netty.server.NettyUtils;
 import com.shxseer.watch.service.CommandService;
 
+import com.shxseer.watch.service.IUserService;
+import com.shxseer.watch.utils.IdUtils;
 import com.shxseer.watch.utils.SpringContextBeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,15 +35,18 @@ public class TaskTread implements Runnable{
 
     private CommandService commandService;
 
+    private IUserService userService;
+
     private RedisDBHelper redisDBHelper;
     public TaskTread(){
-
+        commandService = (CommandService) SpringContextBeanUtils.getBean("commandService");
+        userService = (IUserService) SpringContextBeanUtils.getBean("userService");
+        redisDBHelper = (RedisDBHelper) SpringContextBeanUtils.getBean("redisDBHelper");
     }
 
     @Override
     public void run() {
-        commandService = (CommandService) SpringContextBeanUtils.getBean("commandService");
-        redisDBHelper = (RedisDBHelper) SpringContextBeanUtils.getBean("redisDBHelper");
+
         while (true) {
             logger.debug("线程:" + Thread.currentThread().getName() + "  队列数：" + CommonQueue.queue.size());
             String msg = CommonQueue.getMsg();
@@ -55,7 +60,6 @@ public class TaskTread implements Runnable{
                 String  channelId = (String) redisDBHelper.hashGet(MessageType.IMEI_AND_CHANEL_MAP,imei);
 
                 if(StringUtils.isEmpty(channelId)){
-                    logger.info("channelId:"+channelId);
                     continue;
                 }
                 if (datatypeKey == MessageType.MSG_WAVE) {
@@ -65,7 +69,9 @@ public class TaskTread implements Runnable{
                     long endTime=System.currentTimeMillis();//记录结束时间
                     float excTime=(float)(endTime-startTime)/1000;
                     logger.info("波型处理时间："+excTime+"秒");
-                    NettyUtils.pushMsg(channelId, returnJson + MessageType.STOP_LINE);
+                    if(!StringUtils.isEmpty(returnJson)){
+                        NettyUtils.pushMsg(channelId, returnJson + MessageType.STOP_LINE);
+                    }
                 }else if(datatypeKey.equals(MessageType.MSG_SEDENTARY)){
                 //1.久坐提醒上传
                     sedentarySave(object);
@@ -84,9 +90,10 @@ public class TaskTread implements Runnable{
                     //7,公共参数配置
                     String returnJson = "";
                     NettyUtils.pushMsg(channelId, returnJson + MessageType.STOP_LINE);
+
                 } else if (datatypeKey == MessageType.MSG_BLOOD_BASELINE) {
                     //8.判断血糖血压基准是否有效
-                    String returnJson = bloodBaseIsValid(object);
+                    String returnJson = isStartMeasure(object);
                     NettyUtils.pushMsg(channelId, returnJson + MessageType.STOP_LINE);
                 }
             } else {
@@ -128,14 +135,24 @@ public class TaskTread implements Runnable{
 
     //解析数据类型
     private String waveData(JSON json){
-        WaveDataUpBean waveDataUpBean = JSON.toJavaObject(json,WaveDataUpBean.class);
-        String imei = waveDataUpBean.getImei();
-        User user = commandService.queryUserByImei(imei);
-        //1.脉搏测量——上传
-        waveDataUpBean = commandService.waveSave(waveDataUpBean,user);
-        logger.info("波型保存成功...");
-        Object waveDataDownBean = commandService.waveDealData(waveDataUpBean,user);
-        logger.info(JSON.toJSONString(waveDataDownBean));
+        Object waveDataDownBean = null;
+        try {
+            WaveDataUpBean waveDataUpBean = JSON.toJavaObject(json,WaveDataUpBean.class);
+            String imei = waveDataUpBean.getImei();
+            User user = userService.queryUserByImei(imei);
+            if(null == user){
+                NoticeBean noticeBean = new NoticeBean();
+                noticeBean.setContent("设备没有与用户绑定");
+                noticeBean.setTime(System.currentTimeMillis() / 1000);
+                noticeBean.setDatatype(3);
+                return JSON.toJSONString(noticeBean);
+            }
+            waveDataUpBean.setId(IdUtils.uuid());
+            waveDataDownBean = commandService.waveDealData(waveDataUpBean,user);
+            logger.debug(JSON.toJSONString(waveDataDownBean));
+        }catch (Exception e){
+            logger.error("数据解析错误"+e);
+        }
         return JSON.toJSONString(waveDataDownBean);
     }
 
@@ -149,10 +166,11 @@ public class TaskTread implements Runnable{
         commandService.stepCountSave(JSON.toJavaObject(json,StepBean.class));
     }
 
-    private String bloodBaseIsValid(JSON json){
+    private String isStartMeasure(JSON json){
+        BloodBaselineBean bloodBaselineBean = JSON.toJavaObject(json, BloodBaselineBean.class);
         //8.血糖血压基准值是否有效判断
-        return commandService.bloodBaseIsValid(JSON.toJavaObject(json, BloodBaselineBean.class));
-
+        Object object = commandService.isStartMeasure(bloodBaselineBean);
+        return JSON.toJSONString(object);
     }
 
 

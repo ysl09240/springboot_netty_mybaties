@@ -1,8 +1,6 @@
 package com.shxseer.watch.dao;
 
-import com.shxseer.watch.model.DiseaseScaleValueOne;
-import com.shxseer.watch.model.DiseaseScaleValueThree;
-import com.shxseer.watch.model.DiseaseScaleValueTwo;
+import com.shxseer.watch.model.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
@@ -33,6 +31,12 @@ public interface DiseaseScaleValueMapper {
     void addDiseaseScaleValueThree(DiseaseScaleValueThree diseaseScaleValueThree) throws Exception;
 
     /**
+     * 添加病症尺度值四
+     * @param diseaseScaleValueFour 病症尺度值四实体类对象
+     */
+    void addDiseaseScaleValueFour(DiseaseScaleValueFour diseaseScaleValueFour) throws Exception;
+
+    /**
      * 根据用户id查询此用户的尺度值一对象
      * @param userId
      */
@@ -49,4 +53,17 @@ public interface DiseaseScaleValueMapper {
      * @param diseaseScaleValueOneId
      */
     DiseaseScaleValueThree getdiseaseScaleValueThreeByOneId(String diseaseScaleValueOneId) throws Exception;
+
+    /**
+     * 根据尺度值一id查询此用户的尺度值四对象
+     * @param diseaseScaleValueOneId
+     */
+    DiseaseScaleValueFour getDiseaseScaleValueFourByOneId(String diseaseScaleValueOneId) throws Exception;
+
+    /**
+     * 根据设备号查询用户是否有尺度值
+     * @param bloodBaselineBean
+     * @return
+     */
+    String getDiseaseScaleId(BloodBaselineBean bloodBaselineBean);
 }

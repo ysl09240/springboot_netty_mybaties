@@ -74,6 +74,11 @@ public class EigenValueOne {
      */
     private String singleWaveLength;
 
+    /**
+     * K值
+     */
+    private double kvalue;
+
     public String getId() {
         return id;
     }
@@ -202,6 +207,14 @@ public class EigenValueOne {
         this.singleWaveLength = singleWaveLength;
     }
 
+    public double getKvalue() {
+        return kvalue;
+    }
+
+    public void setKvalue(double kvalue) {
+        this.kvalue = kvalue;
+    }
+
     @Override
     public String toString() {
         return "EigenValueOne{" +
@@ -221,6 +234,7 @@ public class EigenValueOne {
                 ", downcenterIndex=" + downcenterIndex +
                 ", area=" + area +
                 ", singleWaveLength=" + singleWaveLength +
+                ", kvalue=" + kvalue +
                 '}';
     }
 }

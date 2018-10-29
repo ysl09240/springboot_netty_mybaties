@@ -1,5 +1,6 @@
 package com.shxseer.watch.controller;
 
+import cn.edu.xidian.wave.ppgpreprocessor.InvalidWaveException;
 import com.shxseer.watch.algorithm.diseasereport.reportutils.DiseaseScaleUtils;
 import com.shxseer.watch.algorithm.eigenvalue.EigenvalueUtils;
 import com.shxseer.watch.algorithm.wavetools.Test;
@@ -8,6 +9,7 @@ import com.shxseer.watch.common.DiseaseEnum;
 import com.shxseer.watch.common.InvokeResult;
 import com.shxseer.watch.model.*;
 import com.shxseer.watch.service.*;
+import com.shxseer.watch.utils.HttpUtils;
 import com.shxseer.watch.vo.BloodPressValueVo;
 import com.shxseer.watch.vo.UserWaveVo;
 import io.swagger.annotations.Api;
@@ -17,6 +19,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -59,13 +62,16 @@ public class TestController {
     @Autowired
     private IDiseaseTipsService diseaseTipsService;
 
+    @Value("${notice.url.toMine}")
+    private String noticeUrltoMine;
+
     @RequestMapping(value = "/calculateReport", method= RequestMethod.GET)
     @ApiOperation(value = "测试是否能生成报告", notes = "author：zhangliang")
     @ApiImplicitParams({
             @ApiImplicitParam(name="imei",value="设备号",dataType="String", paramType = "query", required = true),
             @ApiImplicitParam(name="startTime",value="测量时间",dataType="String", paramType = "query", required = true),
             @ApiImplicitParam(name="waveId",value="原始波形主键id",dataType="String", paramType = "query", required = true)})
-    public InvokeResult calculateReport(String imei, String startTime, String waveId){
+    public InvokeResult<Map<String,Object>> calculateReport(String imei, String startTime, String waveId){
         InvokeResult result ;
         try {
             User user = userService.queryUserByImei(imei);
@@ -93,7 +99,8 @@ public class TestController {
                         DiseaseScaleValueOne diseaseScaleValueOne = (DiseaseScaleValueOne) diseaseScaleMap.get("diseaseScaleValueOne");
                         DiseaseScaleValueTwo diseaseScaleValueTwo = (DiseaseScaleValueTwo) diseaseScaleMap.get("diseaseScaleValueTwo");
                         DiseaseScaleValueThree diseaseScaleValueThree = (DiseaseScaleValueThree) diseaseScaleMap.get("diseaseScaleValueThree");
-                        diseaseScaleValueService.addDiseaseScaleValue(diseaseScaleValueOne, diseaseScaleValueTwo, diseaseScaleValueThree);
+                        DiseaseScaleValueFour diseaseScaleValueFour = (DiseaseScaleValueFour) diseaseScaleMap.get("diseaseScaleValueFour");
+                        diseaseScaleValueService.addDiseaseScaleValue(diseaseScaleValueOne, diseaseScaleValueTwo, diseaseScaleValueThree, diseaseScaleValueFour);
                     } else if (size < Constant.DISEASESCALE_VALUE) {
                         log.info("您测量的数据数为" + size + "，数据量较少，报告正在初始化");
                         return InvokeResult.SuccessResult("您测量的数据数为" + size + "，数据量较少，报告正在初始化");
@@ -197,12 +204,20 @@ public class TestController {
                 diseaseMap.put(MessageType.RETURN_TYPE_SPORTHERTRATE, reportDisease);
             }
             /** 血液粘稠度报告 */
-            reportDisease = commandService.calculateBloodConsistencyReport(userWaveVo);
+            /*reportDisease = DiseaseReportUtils.calculateBloodConsistencyReport(userWaveVo);
             if(reportDisease != null) {
                 //处理病症建议
                 String suggestList = diseaseTipsService.getRandomDiseaseTips("18");
                 reportDisease.setSuggestList(suggestList);
                 diseaseMap.put(MessageType.RETURN_TYPE_BLOODCONSISTENCY, reportDisease);
+            }*/
+            /** K值报告 */
+            reportDisease = commandService.calculateKvalueReport(userWaveVo);
+            if(reportDisease != null) {
+                //处理病症建议
+                String suggestList = diseaseTipsService.getRandomDiseaseTips("19");
+                reportDisease.setSuggestList(suggestList);
+                diseaseMap.put(MessageType.RETURN_TYPE_KVALUE, reportDisease);
             }
 
             //将病症对象存进数据库表中
@@ -212,13 +227,64 @@ public class TestController {
                 reportDiseaseService.saveReportDisease(obj);
 
                 //将即时报告中的状态改为相应的汉字
-                if(DiseaseEnum.BLOODSUGAR_UP.getValue().equals(obj.getStatus())){
-                    obj.setStatus(DiseaseEnum.BLOODSUGAR_UP.getLabel());
-                }else if(DiseaseEnum.BLOODSUGAR_DOWN.getValue().equals(obj.getStatus())){
-                    obj.setStatus(DiseaseEnum.BLOODSUGAR_DOWN.getLabel());
-                }else if(DiseaseEnum.BLOODSUGAR_NOMAL.getValue().equals(obj.getStatus())){
-                    obj.setStatus(DiseaseEnum.BLOODSUGAR_NOMAL.getLabel());
+                String code = obj.getDiseaseCode()+"";
+                String status = obj.getStatus();
+                if("3".equals(code)){
+                    //血糖
+                    if(DiseaseEnum.BLOODSUGAR_DOWN.getValue().equals(status)){
+                        status = DiseaseEnum.BLOODSUGAR_DOWN.getLabel();
+                    }else if(DiseaseEnum.BLOODSUGAR_NOMAL.getValue().equals(status)){
+                        status = DiseaseEnum.BLOODSUGAR_NOMAL.getLabel();
+                    }else if(DiseaseEnum.BLOODSUGAR_UP.getValue().equals(status)){
+                        status = DiseaseEnum.BLOODSUGAR_UP.getLabel();
+                    }
+                }else if("14".equals(code)){
+                    //血压
+                    if(DiseaseEnum.HIGHANDLOW_ONE.getValue().equals(status)){
+                        status = DiseaseEnum.HIGHANDLOW_ONE.getLabel();
+                    }else if(DiseaseEnum.HIGHANDLOW_TWO.getValue().equals(status)){
+                        status = DiseaseEnum.HIGHANDLOW_TWO.getLabel();
+                    }else if(DiseaseEnum.HIGHANDLOW_THREE.getValue().equals(status)){
+                        status = DiseaseEnum.HIGHANDLOW_THREE.getLabel();
+                    }
+                }else if("0".equals(code)){
+                    //疲劳
+                    if(DiseaseEnum.TERIOD_ONE.getValue().equals(status)){
+                        status = DiseaseEnum.TERIOD_ONE.getLabel();
+                    }else if(DiseaseEnum.TERIOD_TWO.getValue().equals(status)){
+                        status = DiseaseEnum.TERIOD_TWO.getLabel();
+                    }else if(DiseaseEnum.TERIOD_THREE.getValue().equals(status)){
+                        status = DiseaseEnum.TERIOD_THREE.getLabel();
+                    }
+                }else if("17".equals(code)){
+                    //运动预警
+                    if(DiseaseEnum.SPORTHERTRATE_ONE.getValue().equals(status)){
+                        status = DiseaseEnum.SPORTHERTRATE_ONE.getLabel();
+                    }else if(DiseaseEnum.SPORTHERTRATE_TWO.getValue().equals(status)){
+                        status = DiseaseEnum.SPORTHERTRATE_TWO.getLabel();
+                    }else if(DiseaseEnum.SPORTHERTRATE_THREE.getValue().equals(status)){
+                        status = DiseaseEnum.SPORTHERTRATE_THREE.getLabel();
+                    }
+                }else if("18".equals(code)){
+                    //血液黏稠度
+                    if(DiseaseEnum.BLOODCONSISTENCY_ONE.getValue().equals(status)){
+                        status = DiseaseEnum.BLOODCONSISTENCY_ONE.getLabel();
+                    }else if(DiseaseEnum.BLOODCONSISTENCY_TWO.getValue().equals(status)){
+                        status = DiseaseEnum.BLOODCONSISTENCY_TWO.getLabel();
+                    }else if(DiseaseEnum.BLOODCONSISTENCY_THREE.getValue().equals(status)){
+                        status = DiseaseEnum.BLOODCONSISTENCY_THREE.getLabel();
+                    }
+                }else if("19".equals(code)){
+                    //血液黏稠度
+                    if(DiseaseEnum.KVALUE_ONE.getValue().equals(status)){
+                        status = DiseaseEnum.KVALUE_ONE.getLabel();
+                    }else if(DiseaseEnum.KVALUE_TWO.getValue().equals(status)){
+                        status = DiseaseEnum.KVALUE_TWO.getLabel();
+                    }else if(DiseaseEnum.KVALUE_THREE.getValue().equals(status)){
+                        status = DiseaseEnum.KVALUE_THREE.getLabel();
+                    }
                 }
+                obj.setStatus(status);
                 //将血糖中的用餐状态改为相应的汉字
                 if("0".equals(obj.getEatSataus())){
                     obj.setEatSataus("餐前");
@@ -244,7 +310,7 @@ public class TestController {
     @RequestMapping(value = "/calculateNewEigenvalue", method= RequestMethod.GET)
     @ApiOperation(value = "测试是否能生成新特征值", notes = "author：zhangliang")
     @ApiImplicitParam(name="waveId",value="原始数据id",dataType="String", paramType = "query", required = true)
-    public InvokeResult calculateNewEigenvalue(String waveId){
+    public InvokeResult<Map<String,Object>> calculateNewEigenvalue(String waveId){
         InvokeResult result ;
         try {
             String path = "D:\\Wave\\before.txt";
@@ -265,10 +331,36 @@ public class TestController {
                 eigenValueOne.setWaveId(waveId);
             }
             eigenValueService.saveNewEigenRecord(eigenValueOne, eigenValueTwo, eigenValueThree, eigenValueFour, eigenValueFive);
-            result = InvokeResult.SuccessResult("测试是否能生成新特征值 成功");
+            result = InvokeResult.SuccessResult("测试是否能生成新特征值 成功", returnMap);
+        } catch(InvalidWaveException iwe){
+            result = InvokeResult.SuccessResult("本次测量数据无效，请您重新测量", iwe.getMessage());
+            log.info("本次测量数据无效，请您重新测量, " + iwe.getMessage());
+        } catch (Exception e) {
+            result = InvokeResult.Fail("测试是否能生成新特征值 失败");
+            log.error("测试是否能生成新特征值 失败", e);
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/testSendNotification", method= RequestMethod.GET)
+    @ApiOperation(value = "测试给手机端推送消息", notes = "author：zhangliang")
+    @ApiImplicitParam(name="phone",value="手机号",dataType="String", paramType = "query", required = true)
+    public InvokeResult<String> testSendNotification(String phone){
+        InvokeResult result ;
+        try {
+            String msg = null;
+            try {
+                Map<String, Object> param = new HashMap<>();
+                param.put("phone", phone);
+                msg = HttpUtils.doPost(noticeUrltoMine, param);
+            } catch (Exception e) {
+                log.error(""+e.getStackTrace());
+            }
+            log.debug(msg);
+            result = InvokeResult.SuccessResult("测试给手机端推送消息 成功", msg);
         } catch (Exception e) {
             e.printStackTrace();
-            result = InvokeResult.Fail("测试是否能生成新特征值 失败");
+            result = InvokeResult.Fail("测试给手机端推送消息 失败");
         }
         return result;
     }

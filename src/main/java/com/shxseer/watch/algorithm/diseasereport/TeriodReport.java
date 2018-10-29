@@ -41,15 +41,13 @@ public class TeriodReport {
         //病症名称
         String diseaseName = MessageType.RETURN_TYPE_TERIOD;
         data.put("diseaseName", diseaseName);
-        Map<String,String> returnData = FatigueComputeUtils.getFatigueValue(heartRateList,singleWaveLength, centerDenty);
         //指数
-        String number = returnData.get("number");
-        data.put("number", number);
+        data.put("number", "0");
         //状态
-        String VP = returnData.get("VP");
+        String VP = FatigueComputeUtils.getFatigueValue(heartRateList,singleWaveLength, centerDenty);
         data.put("VP", VP);
         //病症分级
-        Map<String,Object> dsmaps = DiseaseSuggest.tiredSuggest(Integer.parseInt(number));
+        Map<String,Object> dsmaps = DiseaseSuggest.tiredSuggest(VP);
         data.put("diseaseType", dsmaps.get("diseaseType"));
         //是否提示预警
         /*if(DiseaseEnum.BLOODSUGAR_UP.getValue().equals(VP)){

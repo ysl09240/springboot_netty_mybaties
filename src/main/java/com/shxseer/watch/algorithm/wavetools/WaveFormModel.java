@@ -1,6 +1,5 @@
 package com.shxseer.watch.algorithm.wavetools;
 
-
 /**
  * @authorseerhuitao 波形实体类
  * @create2018/7/16
@@ -37,11 +36,15 @@ public class WaveFormModel {
     int hertrate;//心率多值
 
     double UpTime;//上支时间
-    double DownTime;//下肢时间
+    double DownTime;//下支时间
     WaveDenty denty=new WaveDenty();//每个动点6个区的密度
     WaveEightDenty eight=new WaveEightDenty();//8个动点的密度
 
     int singleWaveLength;//单个波形的密度
+
+    double AThreeSpeed;//A3点的速度
+    double BThreeSpeed;//b3点的速度
+    double BSconeSpeed;//b2点的速度
 
     public double getUpTime() {
         return UpTime;
@@ -315,6 +318,30 @@ public class WaveFormModel {
         this.singleWaveLength = singleWaveLength;
     }
 
+    public double getBSconeSpeed() {
+        return BSconeSpeed;
+    }
+
+    public void setBSconeSpeed(double BSconeSpeed) {
+        this.BSconeSpeed = BSconeSpeed;
+    }
+
+    public double getAThreeSpeed() {
+        return AThreeSpeed;
+    }
+
+    public void setAThreeSpeed(double AThreeSpeed) {
+        this.AThreeSpeed = AThreeSpeed;
+    }
+
+    public double getBThreeSpeed() {
+        return BThreeSpeed;
+    }
+
+    public void setBThreeSpeed(double BThreeSpeed) {
+        this.BThreeSpeed = BThreeSpeed;
+    }
+
     @Override
     public String toString() {
         return "WaveFormModel{" +
@@ -350,6 +377,9 @@ public class WaveFormModel {
                 ", eight=" + eight +
                 ", hertrate=" + hertrate +
                 ", singleWaveLength=" + singleWaveLength +
+                ", AThreeSpeed=" + AThreeSpeed +
+                ", BThreeSpeed=" + BThreeSpeed +
+                ", BSconeSpeed=" + BSconeSpeed +
                 '}';
     }
 }

@@ -24,7 +24,7 @@ public class Test
         return data;
     }
 
-    public static double[] getArray(String s){
+    public static double[] getArray1(String s){
         List<Double> list=new ArrayList<Double>();
         String[] template=s.split("PPG, ");
         String[] tes=new String[template.length-1];
@@ -43,14 +43,33 @@ public class Test
         return des;
     }
 
+    /**
+     * 手表新算法获得数组
+     * @param num
+     * @return
+     */
+    public static double[] getArray(String num){
+        num = num.replaceAll("\r|\n", "");
+        String[] str=num.split(" ");
+        List<Double> listNum=new ArrayList<>();
+        for(int i=0;i<str.length;i++){
+            if(i%5==0 || i%5==1 || i%5==2){
+                double dat=Double.parseDouble(str[i]);
+                listNum.add(dat);
+            }
+        }
+        double[] des=getList(listNum);
+        return des;
+    }
+
     public static void getListString(String[] str, List<Double> list){
-                for(int k=0;k<str.length;k++){
-                if(k<str.length-2){
-                    if(!str[k].equals("1")&&!str[k].equals("10")){
-                        double dd= Double.parseDouble(str[k]);
-                        list.add(dd);
-                    }
+        for(int k=0;k<str.length;k++){
+            if(k<str.length-2){
+                if(!str[k].equals("1")&&!str[k].equals("10")){
+                    double dd= Double.parseDouble(str[k]);
+                    list.add(dd);
                 }
+            }
         }
     }
 

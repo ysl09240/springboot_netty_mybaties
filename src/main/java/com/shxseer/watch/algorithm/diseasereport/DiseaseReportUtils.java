@@ -112,6 +112,12 @@ public class DiseaseReportUtils {
             if(StringUtils.isNotEmpty(tem) && !"null".equals(tem)){
                 reportDisease.setBloodGlucoseValue(Double.parseDouble(tem));
             }
+        }else if(code == 19){
+            //K值
+            String tem=result.get("bloodGlucoseValue")+"";
+            if(StringUtils.isNotEmpty(tem) && !"null".equals(tem)){
+                reportDisease.setBloodGlucoseValue(Double.parseDouble(tem));
+            }
         }
         return reportDisease;
     }

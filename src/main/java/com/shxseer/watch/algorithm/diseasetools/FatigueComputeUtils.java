@@ -1,9 +1,9 @@
 package com.shxseer.watch.algorithm.diseasetools;
 
+import com.shxseer.watch.common.DiseaseEnum;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @authorseerhuitao 疲劳算法
@@ -17,12 +17,10 @@ public class FatigueComputeUtils {
      * @param centerDenty//每个中层的密度
      * @return
      */
-    public static Map<String,String> getFatigueValue(List<Integer> rateList, double lengthDenty, int centerDenty){
+    public static String getFatigueValue(List<Integer> rateList, double lengthDenty, int centerDenty){
         double less=centerDenty/(double)lengthDenty;
         //状态
         String str = null;
-        //指数
-        String number = "0";
         List<Double> x=new ArrayList<Double>();
         List<Double> y=new ArrayList<Double>();
         for(int i=0;i<rateList.size();i++){
@@ -33,28 +31,25 @@ public class FatigueComputeUtils {
         double restCou=judgeDataChangedValue(y,x);
         if(restCou>0.3||restCou<-0.3){
             if(less>0.1 && less<=0.15){
-                str="处于疲劳";
-                number = "2";
-            }else if(less>0.15 && less<=0.2){
-                str="正常";
-                number = "1";
+                //比较疲劳
+                str = DiseaseEnum.TERIOD_TWO.getValue();
+            }else if(less>0.15){
+                //精神较好
+                str = DiseaseEnum.TERIOD_ONE.getValue();
             }else if(less>0.05 && less<=0.1){
-                str="相当疲劳";
-                number = "3";
+                //非常疲惫
+                str = DiseaseEnum.TERIOD_THREE.getValue();
             }
         }else{
-            str="正常";
-            number = "1";
+            //精神较好
+            str = DiseaseEnum.TERIOD_ONE.getValue();
         }
-        Map<String,String> returnMap = new HashMap<String, String>();
-        returnMap.put("VP", str);
-        returnMap.put("number", number);
-        return returnMap;
+        return str;
     }
 
     //研发趋势
     //返回预判值(double)
-    public static double judgeDataChangedValue(List<Double> dly, List<Double> dlx){
+    public static double judgeDataChangedValue(List<Double> dly,List<Double> dlx){
         //返回去变化的值
         double a=0;
         double b=0;

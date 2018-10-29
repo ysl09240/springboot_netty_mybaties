@@ -27,9 +27,8 @@ public class EigenvalueUtils {
      * @param userWaveVo
      * @throws Exception
      */
-    public static Map<String,Object> getNewEigenValue(UserWaveVo userWaveVo){
-        Map<String, Object> returnMap = NewPlusWaveUtils.getNewEigenValue(userWaveVo.getWaveArray(), userWaveVo.getExePath());
-        return returnMap;
+    public static Map<String,Object> getNewEigenValue(UserWaveVo userWaveVo) throws Exception{
+        return NewPlusWaveUtils.getNewEigenValue(userWaveVo.getWaveArray(), userWaveVo.getExePath());
     }
 
     /**
@@ -130,6 +129,9 @@ public class EigenvalueUtils {
             waveFormModel.setUpTime(SplitData.stringToDoubleList(eigenValueFour.getRiseTime(), regex).get(i));
             waveFormModel.setDownTime(SplitData.stringToDoubleList(eigenValueFour.getFallTime(), regex).get(i));
             waveFormModel.setSingleWaveLength(SplitData.stringToIntegerList(eigenValueOne.getSingleWaveLength(), regex).get(i));
+            waveFormModel.setAThreeSpeed(SplitData.stringToDoubleList(eigenValueFive.getAthreeSpeed(), regex).get(i));
+            waveFormModel.setBThreeSpeed(SplitData.stringToDoubleList(eigenValueFive.getBthreeSpeed(), regex).get(i));
+            waveFormModel.setBSconeSpeed(SplitData.stringToDoubleList(eigenValueFive.getBsconeSpeed(), regex).get(i));
             waveFormModel.setDenty(waveDenty);
             waveFormModelList.add(waveFormModel);
         }

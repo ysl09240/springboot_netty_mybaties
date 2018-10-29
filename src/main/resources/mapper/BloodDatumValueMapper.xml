@@ -35,4 +35,6 @@
         user_id= #{userId} and blood_type = '14' order by create_time desc limit 1
     </select>
 
+
+
 </mapper>

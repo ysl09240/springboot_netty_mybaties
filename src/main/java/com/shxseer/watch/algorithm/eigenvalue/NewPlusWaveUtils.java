@@ -10,6 +10,7 @@ import com.shxseer.watch.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.Map;
 public class NewPlusWaveUtils {
 
     private static final Logger log = LoggerFactory.getLogger(EigenvalueUtils.class);
+
     /**
      * 获取新特征值
      * @param waveArray 原始波形double数组
@@ -121,6 +123,9 @@ public class NewPlusWaveUtils {
             List<Double> fallTimeList = new ArrayList<Double>();
             List<Integer> heartRateList = new ArrayList<Integer>();
             List<Integer> singleWaveLengthList = new ArrayList<Integer>();
+            List<Double> athreeSpeedList = new ArrayList<>();
+            List<Double> bthreeSpeedList = new ArrayList<>();
+            List<Double> bsconeSpeedList = new ArrayList<>();
 
             for (WaveFormModel waveFormModel : waveFormModelList) {
                 startValueList.add(waveFormModel.getStartValue());
@@ -204,6 +209,9 @@ public class NewPlusWaveUtils {
                 fallTimeList.add(waveFormModel.getDownTime());
                 heartRateList.add(waveFormModel.getHertrate());
                 singleWaveLengthList.add(waveFormModel.getSingleWaveLength());
+                athreeSpeedList.add(waveFormModel.getAThreeSpeed());
+                bthreeSpeedList.add(waveFormModel.getBThreeSpeed());
+                bsconeSpeedList.add(waveFormModel.getBSconeSpeed());
             }
 
             //拼接多值数据的分隔符，因为特征值有负数所以不能用“-”
@@ -382,6 +390,17 @@ public class NewPlusWaveUtils {
             eigenValueFive.setAveragePress(allWave.getAveragePress());
             //单个波形的密度
             eigenValueOne.setSingleWaveLength(SplitData.integerListToString(singleWaveLengthList, regex));
+            //A3点的速度
+            eigenValueFive.setAthreeSpeed(SplitData.doubleListToString(athreeSpeedList, regex));
+            //b3点的速度
+            eigenValueFive.setBthreeSpeed(SplitData.doubleListToString(bthreeSpeedList, regex));
+            //b2点的速度
+            eigenValueFive.setBsconeSpeed(SplitData.doubleListToString(bsconeSpeedList, regex));
+            //k值
+            double kvalue = allWave.getKValue();
+            DecimalFormat df = new DecimalFormat("######0.000");
+            kvalue = Double.parseDouble(df.format(kvalue));
+            eigenValueOne.setKvalue(kvalue);
 
             returnMap.put("eigenValueOne", eigenValueOne);
             returnMap.put("eigenValueTwo", eigenValueTwo);

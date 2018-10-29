@@ -11,6 +11,7 @@ public class BloodBaselineBean {
     private Integer datatype;
     private String imei;
     private Integer isvalid	;
+    private String message;
 
     public Integer getDatatype() {
         return datatype;
@@ -34,5 +35,13 @@ public class BloodBaselineBean {
 
     public void setIsvalid(Integer isvalid) {
         this.isvalid = isvalid;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

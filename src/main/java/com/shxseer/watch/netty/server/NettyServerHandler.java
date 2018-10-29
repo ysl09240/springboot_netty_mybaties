@@ -99,7 +99,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
             String time = df.format(new Date());
             Channel channel = ctx.channel();
             final String channelId = channel.id().toString();
-            logger.info("-------消息来啦 time:" + time + " channelId:" + channelId + " msg:" + msg + " cache:" + NettyUtils.channelCache.size());
+            logger.debug("-------消息来啦 time:" + time + " channelId:" + channelId + " msg:" + msg + " cache:" + NettyUtils.channelCache.size());
             String imei = String.valueOf(JSON.parseObject(msg).get("imei"));
             if (!NettyUtils.channelCache.containsKey(channelId)) {
                 //获取数据类型

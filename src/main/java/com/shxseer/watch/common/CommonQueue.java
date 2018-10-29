@@ -22,7 +22,7 @@ public class CommonQueue {
     public static void addMsg(String msg){
         Boolean flag = queue.offer(msg);
         if(!flag){
-            logger.info("队列数己满:"+queue.size());
+            logger.debug("队列数己满:"+queue.size());
         }
 
     }
@@ -30,7 +30,7 @@ public class CommonQueue {
     public static String getMsg(){
         String msg = queue.poll();
         if(StringUtils.isEmpty(msg)){
-            logger.info("队列己空:"+queue.size());
+            logger.debug("队列己空:"+queue.size());
         }
         return msg;
     }

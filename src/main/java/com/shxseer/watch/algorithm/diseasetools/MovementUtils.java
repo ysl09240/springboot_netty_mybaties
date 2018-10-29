@@ -1,9 +1,7 @@
 package com.shxseer.watch.algorithm.diseasetools;
 
 import com.shxseer.watch.algorithm.wavetools.WaveFormModel;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.shxseer.watch.common.DiseaseEnum;
 
 /**
  * @authorseerhuitao 运动状态监视
@@ -18,32 +16,28 @@ public class MovementUtils {
      * @param wfsacret
      * @return
      */
-    public static Map<String, String> getMovementValue(int hertRate, WaveFormModel wfparam, WaveFormModel wfsacret){
+    public static String getMovementValue(int hertRate, WaveFormModel wfparam, WaveFormModel wfsacret){
         //状态
         String pl = null;
-        //指数
-        String number = "0";
         double pp=getMessage(wfparam,wfsacret);
         if(pp>0.25) {
             //适不适合运动主要看脉搏速度、心率、和振幅之间的变化关系
             if (hertRate > 40 && hertRate < 60) {
-                pl = "提高运动";
-                number = "4";
+                //运动正常
+                pl = DiseaseEnum.SPORTHERTRATE_TWO.getValue();
             } else if (hertRate > 60 && hertRate < 100) {
-                pl = "适当运动";
-                number = "3";
+                //提高强度
+                pl = DiseaseEnum.SPORTHERTRATE_ONE.getValue();
             } else if (hertRate > 100) {
-                pl = "不要剧烈运动";
-                number = "2";
+                //过于剧烈
+                pl = DiseaseEnum.SPORTHERTRATE_THREE.getValue();
             }
         }else if(pp<=0.25){
-            pl="不适合运动";
-            number = "1";
+            //和惠涛、陈占勇确定过此项问题，最终决定改成这样2018-08-31
+            //运动正常
+            pl = DiseaseEnum.SPORTHERTRATE_TWO.getValue();
         }
-        Map<String, String> returnMap = new HashMap<String, String>();
-        returnMap.put("VP", pl);
-        returnMap.put("number", number);
-        return returnMap;
+        return pl;
     }
 
     /**

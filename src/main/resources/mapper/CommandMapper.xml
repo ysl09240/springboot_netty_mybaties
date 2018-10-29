@@ -86,20 +86,17 @@
 
     <!-- 血糖血压基准值查询 -->
     <select id="bloodBaseSearch" parameterType="com.shxseer.watch.model.BloodBaselineBean" resultType="java.util.HashMap">
-        SELECT
-        a.standard_interval,
-        a.create_time
+        SELECT a.user_id ,
+            MAX(CASE a.blood_type WHEN 3 THEN a.datum_value  END)  bloodValue,
+            MAX(CASE a.blood_type WHEN 14 THEN a.datum_value END)  pressValue
         FROM blood_datum_value a
-        LEFT JOIN watch_user_record b
-        ON a.user_id = b.user_id
-        LEFT JOIN watch_information c
-        ON b.watch_id = c.id
+        LEFT JOIN watch_user_record b ON a.user_id = b.user_id
+        LEFT JOIN watch_information c ON b.watch_id = c.id
         WHERE c.imei = #{imei}
-        ORDER BY a.create_time
-        DESC
-        LIMIT 0,1
+        GROUP BY a.user_id
+        LIMIT 1
     </select>
-    <!-- 血糖血压基准值查询 -->
+    <!-- 公共参数查询 -->
     <select id="findCommonParams" parameterType="java.lang.String" resultType="com.shxseer.watch.model.CommonParamsBean">
           SELECT
             MAX(CASE common_name WHEN 'serverurl' THEN common_value END ) AS serverurl,
@@ -177,4 +174,6 @@
         SELECT starttime FROM wave_origin_data WHERE starttime &lt; #{startTime} AND imei = #{imei} ORDER BY starttime DESC LIMIT 1
         ) AND imei = #{imei}
     </select>
+
+
 </mapper>

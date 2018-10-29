@@ -1,6 +1,8 @@
 package com.shxseer.watch.algorithm.diseasereport.reportutils;
 
 import com.shxseer.watch.algorithm.diseasetools.ScaleCompute;
+import com.shxseer.watch.algorithm.wavetools.WaveDenty;
+import com.shxseer.watch.algorithm.wavetools.WaveFormModel;
 import com.shxseer.watch.common.Constant;
 import com.shxseer.watch.common.SplitData;
 import com.shxseer.watch.model.*;
@@ -26,7 +28,8 @@ public class DiseaseScaleUtils {
         DiseaseScaleValueOne diseaseScaleValueOne = new DiseaseScaleValueOne();
         DiseaseScaleValueTwo diseaseScaleValueTwo = new DiseaseScaleValueTwo();
         DiseaseScaleValueThree diseaseScaleValueThree = new DiseaseScaleValueThree();
-        //给病症尺度值一、二、三对象的常规属性赋值
+        DiseaseScaleValueFour diseaseScaleValueFour = new DiseaseScaleValueFour();
+        //给病症尺度值一、二、三、四对象的常规属性赋值
         String diseaseScaleValueOneId = IdUtils.uuid();
         diseaseScaleValueOne.setId(diseaseScaleValueOneId);
         Date nowDate = new Date();
@@ -37,7 +40,9 @@ public class DiseaseScaleUtils {
         diseaseScaleValueTwo.setDiseaseScaleValueOneId(diseaseScaleValueOneId);
         diseaseScaleValueThree.setId(IdUtils.uuid());
         diseaseScaleValueThree.setDiseaseScaleValueOneId(diseaseScaleValueOneId);
-        //给病症尺度值一、二、三对象的特征值相关的属性赋值
+        diseaseScaleValueFour.setId(IdUtils.uuid());
+        diseaseScaleValueFour.setDiseaseScaleValueOneId(diseaseScaleValueOneId);
+        //给病症尺度值一、二、三、四对象的特征值相关的属性赋值
         List<Double> startValueList = new ArrayList<Double>();
         List<Double> startIndexList = new ArrayList<Double>();
         List<Double> endValueList = new ArrayList<Double>();
@@ -119,7 +124,13 @@ public class DiseaseScaleUtils {
         List<Double> heartRateList = new ArrayList<Double>();
         List<Double> singleWaveLengthList = new ArrayList<Double>();
         List<Double> averagePressList = new ArrayList<Double>();
+        List<Double> athreeSpeedList = new ArrayList<>();
+        List<Double> bthreeSpeedList = new ArrayList<>();
+        List<Double> bsconeSpeedList = new ArrayList<>();
+        List<Double> kvalueList = new ArrayList<>();
+
         String regex = Constant.EIGENVALUE_SPLIT;
+
         for (Map<String,Object> eigenValueMap : eigenValueMapList) {
             EigenValueOne eigenValueOne = (EigenValueOne) eigenValueMap.get("eigenValueOne");
             EigenValueTwo eigenValueTwo = (EigenValueTwo) eigenValueMap.get("eigenValueTwo");
@@ -207,6 +218,10 @@ public class DiseaseScaleUtils {
             heartRateList.add((double) SplitData.countIntegerListAvg(SplitData.stringToIntegerList(eigenValueOne.getHeartRate(), regex)));
             singleWaveLengthList.add((double) SplitData.countIntegerListAvg(SplitData.stringToIntegerList(eigenValueOne.getSingleWaveLength(), regex)));
             averagePressList.add(eigenValueFive.getAveragePress());
+            athreeSpeedList.add(SplitData.countDoubleListAvg(SplitData.stringToDoubleList(eigenValueFive.getAthreeSpeed(), regex)));
+            bthreeSpeedList.add(SplitData.countDoubleListAvg(SplitData.stringToDoubleList(eigenValueFive.getBthreeSpeed(), regex)));
+            bsconeSpeedList.add(SplitData.countDoubleListAvg(SplitData.stringToDoubleList(eigenValueFive.getBsconeSpeed(), regex)));
+            kvalueList.add(eigenValueOne.getKvalue());
         }
         diseaseScaleValueOne.setStartValueScale(ScaleCompute.getScaleSugarValue(startValueList));
         diseaseScaleValueOne.setStartIndexScale(ScaleCompute.getScaleSugarValue(startIndexList));
@@ -288,10 +303,115 @@ public class DiseaseScaleUtils {
         diseaseScaleValueTwo.setHertrateScale(ScaleCompute.getScaleSugarValue(heartRateList));
         diseaseScaleValueTwo.setSingleWaveLengthScale(ScaleCompute.getScaleSugarValue(singleWaveLengthList));
         diseaseScaleValueOne.setAveragePressScale(ScaleCompute.getScaleSugarValue(averagePressList));
+        diseaseScaleValueFour.setAthreeSpeedScale(ScaleCompute.getScaleSugarValue(athreeSpeedList));
+        diseaseScaleValueFour.setBthreeSpeedScale(ScaleCompute.getScaleSugarValue(bthreeSpeedList));
+        diseaseScaleValueFour.setBsconeSpeedScale(ScaleCompute.getScaleSugarValue(bsconeSpeedList));
+        diseaseScaleValueFour.setKvalueScale(ScaleCompute.getScaleSugarValue(kvalueList));
         //将三个病症尺度值对象返回
         returnMap.put("diseaseScaleValueOne", diseaseScaleValueOne);
         returnMap.put("diseaseScaleValueTwo", diseaseScaleValueTwo);
         returnMap.put("diseaseScaleValueThree", diseaseScaleValueThree);
+        returnMap.put("diseaseScaleValueFour", diseaseScaleValueFour);
         return returnMap;
     }
+
+    /**
+     * 将尺度值三个对象转为算法WaveFormModel类对象
+     * @param diseaseScaleMap
+     * @return
+     */
+    public static WaveFormModel diseaseScaleToWaveFormModel(Map<String, Object> diseaseScaleMap){
+        WaveFormModel waveFormModel = new WaveFormModel();
+        WaveDenty waveDenty=new WaveDenty();
+        DiseaseScaleValueOne diseaseScaleValueOne = (DiseaseScaleValueOne) diseaseScaleMap.get("diseaseScaleValueOne");
+        DiseaseScaleValueTwo diseaseScaleValueTwo = (DiseaseScaleValueTwo) diseaseScaleMap.get("diseaseScaleValueTwo");
+        DiseaseScaleValueThree diseaseScaleValueThree = (DiseaseScaleValueThree) diseaseScaleMap.get("diseaseScaleValueThree");
+        DiseaseScaleValueFour diseaseScaleValueFour = (DiseaseScaleValueFour) diseaseScaleMap.get("diseaseScaleValueFour");
+        waveFormModel.setHertrate((int) diseaseScaleValueTwo.getHertrateScale());
+        waveFormModel.setStartValue(diseaseScaleValueOne.getStartValueScale());
+        waveFormModel.setStartIndex(diseaseScaleValueOne.getStartIndexScale());
+        waveFormModel.setEndValue(diseaseScaleValueOne.getEndValueScale());
+        waveFormModel.setEndIndex(diseaseScaleValueOne.getEndIndexScale());
+        waveFormModel.setCenterValue(diseaseScaleValueOne.getCenterValueScale());
+        waveFormModel.setCenterIndex(diseaseScaleValueOne.getCenterIndexScale());
+        waveFormModel.setDowncenterValue(diseaseScaleValueOne.getDowncenterValueScale());
+        waveFormModel.setDowncenterIndex(diseaseScaleValueOne.getDowncenterIndexScale());
+        waveFormModel.setAre(diseaseScaleValueOne.getAreScale());
+        waveFormModel.setWidth(diseaseScaleValueOne.getWidthScale());
+        waveFormModel.setSingleLength(diseaseScaleValueOne.getSingleLengthScale());
+        waveFormModel.setSpeed(diseaseScaleValueOne.getSpeedScale());
+        waveFormModel.setAoneValue(diseaseScaleValueOne.getAoneValueScale());
+        waveFormModel.setAoneIndex(diseaseScaleValueOne.getAoneIndexScale());
+        waveFormModel.setAtwoValue(diseaseScaleValueOne.getAtwoValueScale());
+        waveFormModel.setAtwoIndex(diseaseScaleValueOne.getAtwoIndexScale());
+        waveFormModel.setAthrValue(diseaseScaleValueOne.getAthrValueScale());
+        waveFormModel.setAthrIndex(diseaseScaleValueOne.getAthrIndexScale());
+        waveFormModel.setBoneValue(diseaseScaleValueOne.getBoneValueScale());
+        waveFormModel.setBoneIndex(diseaseScaleValueOne.getBoneIndexScale());
+        waveFormModel.setBtwoValue(diseaseScaleValueTwo.getBtwoValueScale());
+        waveFormModel.setBtwoIndex(diseaseScaleValueTwo.getBtwoIndexScale());
+        waveFormModel.setBthrValue(diseaseScaleValueTwo.getBthrValueScale());
+        waveFormModel.setBthrIndex(diseaseScaleValueTwo.getBthrIndexScale());
+        waveFormModel.setConeValue(diseaseScaleValueTwo.getConeValueScale());
+        waveFormModel.setConeIndex(diseaseScaleValueTwo.getConeIndexScale());
+        waveFormModel.setCtwoValue(diseaseScaleValueTwo.getCtwoValueScale());
+        waveFormModel.setCtwoIndex(diseaseScaleValueTwo.getCtwoIndexScale());
+        waveDenty.setAoneShallowUp((int) diseaseScaleValueTwo.getAoneShallowUpScale());
+        waveDenty.setAoneShallowDwon((int) diseaseScaleValueTwo.getAoneShallowDwonScale());
+        waveDenty.setAoneCenterUp((int) diseaseScaleValueTwo.getAoneCenterUpScale());
+        waveDenty.setAoneCenterDwon((int) diseaseScaleValueTwo.getAoneCenterDwonScale());
+        waveDenty.setAoneDeepUp((int) diseaseScaleValueTwo.getAoneDeepUpScale());
+        waveDenty.setAoneDeepDwon((int) diseaseScaleValueTwo.getAoneDeepDwonScale());
+        waveDenty.setAtwoShallowUp((int) diseaseScaleValueTwo.getAtwoShallowUpScale());
+        waveDenty.setAtwoShallowDwon((int) diseaseScaleValueTwo.getAtwoShallowDwonScale());
+        waveDenty.setAtwoCenterUp((int) diseaseScaleValueTwo.getAtwoCenterUpScale());
+        waveDenty.setAtwoCenterDwon((int) diseaseScaleValueTwo.getAtwoCenterDwonScale());
+        waveDenty.setAtwoDeepUp((int) diseaseScaleValueTwo.getAtwoDeepUpScale());
+        waveDenty.setAtwoDeepDwon((int) diseaseScaleValueTwo.getAtwoDeepDwonScale());
+        waveDenty.setAthrShallowUp((int) diseaseScaleValueTwo.getAthrShallowUpScale());
+        waveDenty.setAthrShallowDwon((int) diseaseScaleValueTwo.getAthrShallowDwonScale());
+        waveDenty.setAthrCenterUp((int) diseaseScaleValueTwo.getAthrCenterUpScale());
+        waveDenty.setAthrCenterDwon((int) diseaseScaleValueTwo.getAthrCenterDwonScale());
+        waveDenty.setAthrDeepUp((int) diseaseScaleValueTwo.getAthrDeepUpScale());
+        waveDenty.setAthrDeepDwon((int) diseaseScaleValueTwo.getAthrDeepDwonScale());
+        waveDenty.setBoneShallowUp((int) diseaseScaleValueThree.getBoneShallowUpScale());
+        waveDenty.setBoneShallowDwon((int) diseaseScaleValueThree.getBoneCenterDwonScale());
+        waveDenty.setBoneCenterUp((int) diseaseScaleValueThree.getBoneCenterUpScale());
+        waveDenty.setBoneCenterDwon((int) diseaseScaleValueThree.getBoneCenterDwonScale());
+        waveDenty.setBoneDeepUp((int) diseaseScaleValueThree.getBoneDeepUpScale());
+        waveDenty.setBoneDeepDwon((int) diseaseScaleValueThree.getBoneDeepDwonScale());
+        waveDenty.setBtwoShallowUp((int) diseaseScaleValueThree.getBtwoShallowUpScale());
+        waveDenty.setBtwoShallowDwon((int) diseaseScaleValueThree.getBtwoShallowDwonScale());
+        waveDenty.setBtwoCenterUp((int) diseaseScaleValueThree.getBtwoCenterUpScale());
+        waveDenty.setBtwoCenterDwon((int) diseaseScaleValueThree.getBthrCenterDwonScale());
+        waveDenty.setBtwoDeepUp((int) diseaseScaleValueThree.getBtwoDeepUpScale());
+        waveDenty.setBtwoDeepDwon((int) diseaseScaleValueThree.getBtwoDeepDwonScale());
+        waveDenty.setBthrShallowUp((int) diseaseScaleValueThree.getBthrShallowUpScale());
+        waveDenty.setBthrShallowDwon((int) diseaseScaleValueThree.getBthrShallowDwonScale());
+        waveDenty.setBthrCenterUp((int) diseaseScaleValueThree.getBthrCenterUpScale());
+        waveDenty.setBthrCenterDwon((int) diseaseScaleValueThree.getBthrCenterDwonScale());
+        waveDenty.setBthrDeepUp((int) diseaseScaleValueThree.getBthrDeepUpScale());
+        waveDenty.setBthrDeepDwon((int) diseaseScaleValueThree.getBthrDeepDwonScale());
+        waveDenty.setConeShallowUp((int) diseaseScaleValueThree.getConeShallowUpScale());
+        waveDenty.setConeShallowDwon((int) diseaseScaleValueThree.getConeShallowDwonScale());
+        waveDenty.setConeCenterUp((int) diseaseScaleValueThree.getConeCenterUpScale());
+        waveDenty.setConeCenterDwon((int) diseaseScaleValueThree.getConeCenterDwonScale());
+        waveDenty.setConeDeepUp((int) diseaseScaleValueThree.getConeDeepUpScale());
+        waveDenty.setConeDeepDwon((int) diseaseScaleValueThree.getConeDeepDwonScale());
+        waveDenty.setCtwoShallowUp((int) diseaseScaleValueThree.getCtwoShallowUpScale());
+        waveDenty.setCtwoShallowDwon((int) diseaseScaleValueThree.getCtwoShallowDwonScale());
+        waveDenty.setCtwoCenterUp((int) diseaseScaleValueThree.getCtwoCenterUpScale());
+        waveDenty.setCtwoCenterDwon((int) diseaseScaleValueThree.getCtwoCenterDwonScale());
+        waveDenty.setCtwoDeepUp((int) diseaseScaleValueThree.getCtwoDeepUpScale());
+        waveDenty.setCtwoDeepDwon((int) diseaseScaleValueThree.getCtwoDeepDwonScale());
+        waveFormModel.setUpTime(diseaseScaleValueTwo.getUpTimeScale());
+        waveFormModel.setDownTime(diseaseScaleValueTwo.getDownTimeScale());
+        waveFormModel.setSingleWaveLength((int) diseaseScaleValueTwo.getSingleWaveLengthScale());
+        waveFormModel.setAThreeSpeed(diseaseScaleValueFour.getAthreeSpeedScale());
+        waveFormModel.setBThreeSpeed(diseaseScaleValueFour.getBthreeSpeedScale());
+        waveFormModel.setBSconeSpeed(diseaseScaleValueFour.getBsconeSpeedScale());
+        waveFormModel.setDenty(waveDenty);
+        return waveFormModel;
+    }
+
 }

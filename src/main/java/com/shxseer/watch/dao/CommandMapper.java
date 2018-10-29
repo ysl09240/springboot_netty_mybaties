@@ -26,7 +26,7 @@ public interface CommandMapper {
     void stepCountSave(StepBean stepBean);
 
     //血糖血压基准值查询
-    List<HashMap> bloodBaseSearch(BloodBaselineBean bloodBaselineBean);
+    Map bloodBaseSearch(BloodBaselineBean bloodBaselineBean);
 
     /**
      * 查询公共参数配置

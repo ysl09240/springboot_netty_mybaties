@@ -4,43 +4,45 @@
 
     <!-- 添加特征值一 -->
     <insert id="addEigenValueOne" parameterType="com.shxseer.watch.model.EigenValueOne">
-        INSERT INTO eigen_value_one (
-        id,
-        create_time,
-        wave_id,
-        pulse_speed,
-        pulse_area,
-        heart_rate,
-        start_value,
-        start_index,
-        end_value,
-        end_index,
-        center_value,
-        center_index,
-        down_center_value,
-        down_center_index,
-        area,
-        single_wave_length
-        )
-        VALUES
-        (
-        #{id},
-        #{createTime},
-        #{waveId},
-        #{pulseSpeed},
-        #{pulseArea},
-        #{heartRate},
-        #{startValue},
-        #{startIndex},
-        #{endValue},
-        #{endIndex},
-        #{centerValue},
-        #{centerIndex},
-        #{downcenterValue},
-        #{downcenterIndex},
-        #{area},
-        #{singleWaveLength}
-        )
+          INSERT INTO eigen_value_one (
+              id,
+              create_time,
+              wave_id,
+              pulse_speed,
+              pulse_area,
+              heart_rate,
+              start_value,
+              start_index,
+              end_value,
+              end_index,
+              center_value,
+              center_index,
+              down_center_value,
+              down_center_index,
+              area,
+              single_wave_length,
+              k_value
+            )
+            VALUES
+              (
+               #{id},
+               #{createTime},
+               #{waveId},
+               #{pulseSpeed},
+               #{pulseArea},
+               #{heartRate},
+               #{startValue},
+               #{startIndex},
+               #{endValue},
+               #{endIndex},
+               #{centerValue},
+               #{centerIndex},
+               #{downcenterValue},
+               #{downcenterIndex},
+               #{area},
+               #{singleWaveLength},
+               #{kvalue}
+              )
     </insert>
 
     <!-- 添加特征值二 -->
@@ -198,71 +200,78 @@
 
     <!-- 添加特征值五 -->
     <insert id="addEigenValueFive" parameterType="com.shxseer.watch.model.EigenValueFive">
-        INSERT INTO eigen_value_five (
-        id,
-        eigenvalueone_id,
-        bthr_center_dwon,
-        bthr_deep_up,
-        bthr_deep_dwon,
-        cone_shallow_up,
-        cone_shallow_dwon,
-        cone_center_up,
-        cone_center_dwon,
-        cone_deep_up,
-        cone_deep_dwon,
-        ctwo_shallow_up,
-        ctwo_shallow_dwon,
-        ctwo_center_up,
-        ctwo_center_dwon,
-        ctwo_deep_up,
-        ctwo_deep_dwon,
-        average_press
-        )
-        VALUES
-        (
-        #{id},
-        #{eigenValueOneId},
-        #{bthrCenterDwon},
-        #{bthrDeepUp},
-        #{bthrDeepDwon},
-        #{coneShallowUp},
-        #{coneShallowDwon},
-        #{coneCenterUp},
-        #{coneCenterDwon},
-        #{coneDeepUp},
-        #{coneDeepDwon},
-        #{ctwoShallowUp},
-        #{ctwoShallowDwon},
-        #{ctwoCenterUp},
-        #{ctwoCenterDwon},
-        #{ctwoDeepUp},
-        #{ctwoDeepDwon},
-        #{averagePress}
-        )
+            INSERT INTO eigen_value_five (
+              id,
+              eigenvalueone_id,
+              bthr_center_dwon,
+              bthr_deep_up,
+              bthr_deep_dwon,
+              cone_shallow_up,
+              cone_shallow_dwon,
+              cone_center_up,
+              cone_center_dwon,
+              cone_deep_up,
+              cone_deep_dwon,
+              ctwo_shallow_up,
+              ctwo_shallow_dwon,
+              ctwo_center_up,
+              ctwo_center_dwon,
+              ctwo_deep_up,
+              ctwo_deep_dwon,
+              average_press,
+              athree_speed,
+              bthree_speed,
+              bscone_speed
+            )
+            VALUES
+              (
+               #{id},
+               #{eigenValueOneId},
+               #{bthrCenterDwon},
+               #{bthrDeepUp},
+               #{bthrDeepDwon},
+               #{coneShallowUp},
+               #{coneShallowDwon},
+               #{coneCenterUp},
+               #{coneCenterDwon},
+               #{coneDeepUp},
+               #{coneDeepDwon},
+               #{ctwoShallowUp},
+               #{ctwoShallowDwon},
+               #{ctwoCenterUp},
+               #{ctwoCenterDwon},
+               #{ctwoDeepUp},
+               #{ctwoDeepDwon},
+               #{averagePress},
+               #{athreeSpeed},
+               #{bthreeSpeed},
+               #{bsconeSpeed}
+              )
     </insert>
 
     <!-- 根据原始数据主键id查询特征值一对象 -->
     <select id="getEigenValueOnebyWaveId" parameterType="java.lang.String" resultType="com.shxseer.watch.model.EigenValueOne">
-        SELECT
-        id,
-        create_time as createTime,
-        wave_id as waveId,
-        pulse_speed as pulseSpeed,
-        pulse_area as pulseArea,
-        heart_rate as heartRate,
-        start_value as startValue,
-        start_index as startIndex,
-        end_value as endValue,
-        end_index as endIndex,
-        center_value as centerValue,
-        center_index as centerIndex,
-        down_center_value as downcenterValue,
-        down_center_index as downcenterIndex,
-        area,
-        single_wave_length as singleWaveLength
-        FROM
-        eigen_value_one
-        where wave_id = #{waveId}
+          SELECT
+              id,
+              create_time as createTime,
+              wave_id as waveId,
+              pulse_speed as pulseSpeed,
+              pulse_area as pulseArea,
+              heart_rate as heartRate,
+              start_value as startValue,
+              start_index as startIndex,
+              end_value as endValue,
+              end_index as endIndex,
+              center_value as centerValue,
+              center_index as centerIndex,
+              down_center_value as downcenterValue,
+              down_center_index as downcenterIndex,
+              area,
+              single_wave_length as singleWaveLength,
+              k_value as kvalue
+            FROM
+              eigen_value_one
+            where wave_id = #{waveId}
     </select>
 
     <!-- 根据特征值一主键id查询特征值二对象 -->
@@ -372,7 +381,10 @@
               ctwo_center_dwon as ctwoCenterDwon,
               ctwo_deep_up as ctwoDeepUp,
               ctwo_deep_dwon as ctwoDeepDwon,
-              average_press as averagePress
+              average_press as averagePress,
+              athree_speed as athreeSpeed,
+              bthree_speed as bthreeSpeed,
+              bscone_speed as bsconeSpeed
             FROM
               eigen_value_five
             where eigenvalueone_id = #{eigenValueOneId}

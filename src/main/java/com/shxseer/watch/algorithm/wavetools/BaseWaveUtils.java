@@ -27,58 +27,84 @@ public class BaseWaveUtils {
         this.listnum =listF;
     }
     //计算所有的特征值
-    public List<WaveFormModel> getAllAmplitude(){
-        List<WaveFormModel> formValue=new ArrayList<WaveFormModel>();
-        //计算下标
-        double count=0;
-        double length=0;
-        double are=0;
+    public List<WaveFormModel>  getAllAmplitude(){
+        List<WaveFormModel> formValue=new ArrayList<>();
         //计算单个脉搏下标
         double total=0;
+        //计算下标
+        double count=0;
         for(int j=0;j<bwue.validWaveforms.length;j++)
         {
-
+        //初始化数据
+        double athreeLength=0;
+        double bthreeLength=0;
+        double bsecspeed=0;
+        double are=0;//计算单个脉搏波的面积
+        double length=0;//计算单个脉搏波的长度
         double[] waveformDataPoints = bwue.validWaveforms[j].getWaveformDataPoints();
         if(j>0){
-            count=+waveformDataPoints.length;
+//            count=+waveformDataPoints.length;
         }
-        //脉搏波的特性
+            //脉搏波的特性
             WaveFormModel wfm=new WaveFormModel();
-        //获取脉搏波的8个动点的密度
+            //获取脉搏波的8个动点的密度
             WaveDenty wd=wfm.getDenty();
-
-            wfm.setStartIndex(count);
-            wfm.setStartValue(waveformDataPoints[0]);
-            wfm.setEndIndex(count+waveformDataPoints.length-1);
-            wfm.setEndValue(waveformDataPoints[waveformDataPoints.length-1]);
-
             //计算振幅
             List<Double> listc= SystemTools.getArray(waveformDataPoints);
             double num= SystemTools.getMax(listc);
             wfm.setCenterValue(num);
+            int centerBase=0;
+
+            int vtl=20;
+            int vth=15;
             //判断振幅的下标以及获取
             for(int i=0;i<waveformDataPoints.length;i++){
+                //每一个小波看成是一个波形
+                wfm.setStartIndex(count);
+                wfm.setStartValue(waveformDataPoints[0]);
+                wfm.setEndIndex(count+waveformDataPoints.length-1);
+                wfm.setEndValue(waveformDataPoints[waveformDataPoints.length-1]);
+                //计算A3点和B3点的速度
+                if(i>0){
+                   double xx=(waveformDataPoints[i]-waveformDataPoints[i-1])*(waveformDataPoints[i]-waveformDataPoints[i-1])+5*5;
+                   double yy=(waveformDataPoints[i]-waveformDataPoints[i-1])*(waveformDataPoints[i]-waveformDataPoints[i-1])+5*5;
+                   double zz=(waveformDataPoints[i]-waveformDataPoints[i-1])*(waveformDataPoints[i]-waveformDataPoints[i-1])+5*5;
+                   double x1=Math.sqrt(xx);
+                   double x2=Math.sqrt(yy);
+                   double z3=Math.sqrt(zz);
+                   athreeLength += Math.abs(x1);
+                   bthreeLength += Math.abs(x2);
+                   bsecspeed += Math.abs(z3);
+                }
+
                 if(num==waveformDataPoints[i])
                 {
                    wfm.setCenterIndex(count+i);
+                   centerBase=i;
                    //计算上支时间
-                    wfm.setUpTime(i*0.002);
+                   wfm.setUpTime(i*0.002);
+                   //A3点的速度（长度除以时间）
+                   wfm.setAThreeSpeed(athreeLength/(i*2));
+
+                   wfm.setBSconeSpeed(centerBase+vth);
+
+                   //获取降中峡
+                   wfm.setDowncenterIndex(centerBase+vtl);
+                   wfm.setDowncenterValue(waveformDataPoints[centerBase+vtl]);
                 }
-                //获取降中峡
-                wfm.setDowncenterIndex(count+waveformDataPoints.length/4);
-                wfm.setDowncenterValue(waveformDataPoints[waveformDataPoints.length/4]);
+
+                if(centerBase>0 && i<=centerBase+vtl){
+                    wfm.setBThreeSpeed(bthreeLength/(i*2)-1.8);
+                }
                 //计算下支时间
-                wfm.setDownTime((waveformDataPoints.length*0.002)/4);
-                //单个波形的密度
+                wfm.setDownTime((waveformDataPoints.length*0.002)/2);
                 wfm.setSingleWaveLength(waveformDataPoints.length);
                 if(i>0){
-                    length+= Math.abs(waveformDataPoints[i]-waveformDataPoints[i-1]);
+                    length+=Math.abs(waveformDataPoints[i]-waveformDataPoints[i-1]);
                 }
-                are += waveformDataPoints[i];
-
+                are += waveformDataPoints[i]/1000;
 
             }
-
             //脉搏波的面积
             wfm.setAre(are);
             //脉搏波的宽度
@@ -109,7 +135,7 @@ public class BaseWaveUtils {
         double l=0;
         for(int i=0;i<num.length;i++){
             if(i>0){
-                l+= Math.abs(num[i]-num[i-1]);
+                l+=Math.abs(num[i]-num[i-1]);
             }
             if(num[i]==wfm.getDowncenterValue()){
                 l1=l;

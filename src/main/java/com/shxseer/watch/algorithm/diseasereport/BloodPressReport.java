@@ -12,8 +12,6 @@ import com.shxseer.watch.model.ReportDisease;
 import com.shxseer.watch.model.User;
 import com.shxseer.watch.utils.IdUtils;
 import com.shxseer.watch.vo.BloodPressValueVo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -27,8 +25,6 @@ import java.util.Map;
  * @since 2018-08-13 17:06
  */
 public class BloodPressReport {
-
-    private static Logger log = LoggerFactory.getLogger(BloodPressReport.class);
 
     /**
      * 血压即时报告
@@ -85,7 +81,7 @@ public class BloodPressReport {
             highMaxValue = Double.parseDouble(df.format(highRes[1]));
             //高压个性化区间下限
             highMinValue = Double.parseDouble(df.format(highRes[0]));
-            double[] lowRes = h.getFade(lowList,Constant.BASICKMEANS_VALUE);
+            double[] lowRes = h.getFade(lowList, Constant.BASICKMEANS_VALUE);
             //低压个性化区间上限
             lowMaxValue = Double.parseDouble(df.format(lowRes[1]));
             //低压个性化区间下限
@@ -98,7 +94,7 @@ public class BloodPressReport {
         data.put("lowMaxValue", lowMaxValue);
         data.put("lowMinValue", lowMinValue);
         int number = 0;
-        data.put("number", number+"");
+        data.put("number", "0");
         Map<String,Object> bloodShowMaps = DiseaseSuggest.judgeBloodShow(number);
         //状态
         String VP = (String) bloodShowMaps.get("result");

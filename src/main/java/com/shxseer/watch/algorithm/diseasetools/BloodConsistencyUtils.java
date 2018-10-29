@@ -1,9 +1,9 @@
 package com.shxseer.watch.algorithm.diseasetools;
 
+import com.shxseer.watch.common.DiseaseEnum;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @authorseerhuitao 血液粘稠度算法
@@ -29,8 +29,8 @@ public class BloodConsistencyUtils {
      * @param list
      * @return
      */
-    public static Map<String, String> getLossGo(List<Double> list){
-        String str="";
+    public static String getLossGo(List<Double> list){
+        String str=null;
         List<Double> x=new ArrayList<Double>();
         List<Double> y=new ArrayList<Double>();
         for(int i=0;i<list.size();i++){
@@ -40,18 +40,13 @@ public class BloodConsistencyUtils {
         //判断离散系数
         int restCou=judgeDataChanged(y,x);
         if(restCou==1){
-            str="升高";
+            str= DiseaseEnum.BLOODCONSISTENCY_ONE.getValue();
         }else if(restCou==2){
-            str="正常";
+            str= DiseaseEnum.BLOODCONSISTENCY_TWO.getValue();
         }else if(restCou==3){
-            str="降低";
+            str= DiseaseEnum.BLOODCONSISTENCY_THREE.getValue();
         }
-
-        Map<String, String> returnData = new HashMap<String, String>();
-        returnData.put("number", restCou+"");
-        returnData.put("VP", str);
-
-        return returnData;
+        return str;
     }
 
     //线性回归方程(处理double)

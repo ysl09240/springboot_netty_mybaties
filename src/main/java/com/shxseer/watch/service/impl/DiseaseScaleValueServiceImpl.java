@@ -1,9 +1,7 @@
 package com.shxseer.watch.service.impl;
 
 import com.shxseer.watch.dao.DiseaseScaleValueMapper;
-import com.shxseer.watch.model.DiseaseScaleValueOne;
-import com.shxseer.watch.model.DiseaseScaleValueThree;
-import com.shxseer.watch.model.DiseaseScaleValueTwo;
+import com.shxseer.watch.model.*;
 import com.shxseer.watch.service.IDiseaseScaleValueService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +19,7 @@ import java.util.Map;
 @Service("diseaseScaleValueService")
 public class DiseaseScaleValueServiceImpl implements IDiseaseScaleValueService {
 
-    private static Logger log = LoggerFactory.getLogger(DiseaseScaleValueServiceImpl.class);
+    private static final Logger log= LoggerFactory.getLogger(DiseaseScaleValueServiceImpl.class);
 
     @Autowired
     private DiseaseScaleValueMapper diseaseScaleValueMapper;
@@ -31,11 +29,13 @@ public class DiseaseScaleValueServiceImpl implements IDiseaseScaleValueService {
      * @param diseaseScaleValueOne 病症尺度值实体类一对象
      * @param diseaseScaleValueOne 病症尺度值实体类二对象
      * @param diseaseScaleValueThree 病症尺度值实体类三对象
+     * @param diseaseScaleValueFour 病症尺度值实体类四对象
      */
     @Override
     public void addDiseaseScaleValue(DiseaseScaleValueOne diseaseScaleValueOne,
                                      DiseaseScaleValueTwo diseaseScaleValueTwo,
-                                     DiseaseScaleValueThree diseaseScaleValueThree){
+                                     DiseaseScaleValueThree diseaseScaleValueThree,
+                                     DiseaseScaleValueFour diseaseScaleValueFour){
         try {
             diseaseScaleValueMapper.addDiseaseScaleValueOne(diseaseScaleValueOne);
             log.info("向病症尺度值表一中插入数据 成功");
@@ -43,6 +43,8 @@ public class DiseaseScaleValueServiceImpl implements IDiseaseScaleValueService {
             log.info("向病症尺度值表二中插入数据 成功");
             diseaseScaleValueMapper.addDiseaseScaleValueThree(diseaseScaleValueThree);
             log.info("向病症尺度值表三中插入数据 成功");
+            diseaseScaleValueMapper.addDiseaseScaleValueFour(diseaseScaleValueFour);
+            log.info("向病症尺度值表四中插入数据 成功");
         } catch (Exception e) {
             log.error("向病症尺度值表中插入数据 失败", e);
         }
@@ -61,9 +63,11 @@ public class DiseaseScaleValueServiceImpl implements IDiseaseScaleValueService {
             if(diseaseScaleValueOne != null){
                 DiseaseScaleValueTwo diseaseScaleValueTwo = diseaseScaleValueMapper.getDiseaseScaleValueTwoByOneId(diseaseScaleValueOne.getId());
                 DiseaseScaleValueThree diseaseScaleValueThree = diseaseScaleValueMapper.getdiseaseScaleValueThreeByOneId(diseaseScaleValueOne.getId());
+                DiseaseScaleValueFour diseaseScaleValueFour = diseaseScaleValueMapper.getDiseaseScaleValueFourByOneId(diseaseScaleValueOne.getId());
                 returnMap.put("diseaseScaleValueOne", diseaseScaleValueOne);
                 returnMap.put("diseaseScaleValueTwo", diseaseScaleValueTwo);
                 returnMap.put("diseaseScaleValueThree", diseaseScaleValueThree);
+                returnMap.put("diseaseScaleValueFour", diseaseScaleValueFour);
                 log.info("根据用户id查询此用户的尺度值对象 成功");
                 return returnMap;
             }
@@ -72,4 +76,16 @@ public class DiseaseScaleValueServiceImpl implements IDiseaseScaleValueService {
         }
         return null;
     }
+
+    /**
+     * 根据设备号查询用户是否有尺度值
+     * @param bloodBaselineBean
+     * @return
+     */
+    @Override
+    public String getDiseaseScaleId(BloodBaselineBean bloodBaselineBean) {
+        return diseaseScaleValueMapper.getDiseaseScaleId(bloodBaselineBean);
+    }
+
+
 }

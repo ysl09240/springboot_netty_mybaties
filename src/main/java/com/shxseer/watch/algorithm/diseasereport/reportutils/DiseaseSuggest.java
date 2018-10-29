@@ -24,26 +24,17 @@ public class DiseaseSuggest {
 	/**
 	 * 0-疲劳病症的分级和建议
 	 */
-	public static Map<String,Object> tiredSuggest(int number){
+	public static Map<String,Object> tiredSuggest(String status){
 		Map<String,Object> maps = new HashMap<String,Object>();
-		if(number == 1){
-			result = "精神饱满";
-			diseaseType = "注意劳逸结合，精力更持久。";
-		}else if(number == 1){
-			result = "精神较好";
+		if(DiseaseEnum.TERIOD_ONE.getValue().equals(status)){
 			diseaseType = "注意劳逸结合，工作更有效。";
-		}else if(number == 2){
-			result = "精神一般";
-			diseaseType = "小憩一会，保持良好的精神状态。";
-		}else if(number == 2){
-			result = "比较疲劳";
+		}else if(DiseaseEnum.TERIOD_TWO.getValue().equals(status)){
 			diseaseType = "建议休息，改善疲劳。";
-		}else if(number == 3){
-			result = "非常疲惫";
+		}else if(DiseaseEnum.TERIOD_THREE.getValue().equals(status)){
 			diseaseType = "立即休息，缓解疲劳。";
 		}
-		maps.put("result", result);
 		maps.put("diseaseType", diseaseType);
+		diseaseType = null;
 		return maps;
 	}
 
@@ -139,20 +130,21 @@ public class DiseaseSuggest {
 
 	/**
 	 * 3-血糖的分级和建议2
-	 * @param VP
+	 * @param status
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static Map<String,Object> judgeBloodSugar1(String VP){
+	public static Map<String,Object> judgeBloodSugar1(String status){
 		Map<String,Object> maps = new HashMap<String,Object>();
-		if(DiseaseEnum.BLOODSUGAR_DOWN.getValue().equals(VP)){
-			diseaseType = "本次血糖偏低，请注意饮食。";
-		}else if(DiseaseEnum.BLOODSUGAR_NOMAL.getValue().equals(VP)){
-			diseaseType = "本次血糖正常。";
-		}else if(DiseaseEnum.BLOODSUGAR_UP.getValue().equals(VP)){
-			diseaseType = "本次血糖偏高，请注意饮食。";
+		if(DiseaseEnum.BLOODSUGAR_DOWN.getValue().equals(status)){
+			diseaseType = "数据分析显示，您本次血糖偏低，建议您保持良好的作息习惯，注意饮食。";
+		}else if(DiseaseEnum.BLOODSUGAR_NOMAL.getValue().equals(status)){
+			diseaseType = "数据分析显示，您本次血糖正常，请继续保持。";
+		}else if(DiseaseEnum.BLOODSUGAR_UP.getValue().equals(status)){
+			diseaseType = "数据分析显示，您本次血糖偏高，请您您保持良好的生活方式，注意饮食，如有感觉身体不适，建议您及时就医。";
 		}
 		maps.put("diseaseType", diseaseType);
+		diseaseType = null;
 		return maps;
 	}
 
@@ -316,7 +308,7 @@ public class DiseaseSuggest {
 	 */
 	public static Map<String,Object> judgeMenstruation2(int number){
 		Map<String,Object> maps = new HashMap<String,Object>();
-		List<String> diets = new ArrayList<String>();//饮食
+		List<String> diets = new ArrayList<String>();//饮食 
 		List<String> sports = new ArrayList<String>();//运动
 		List<String> otherSuggests = new ArrayList<String>();//其他
 		if(number>=0&&number<=50){
@@ -615,7 +607,7 @@ public class DiseaseSuggest {
 	@SuppressWarnings("unchecked")
 	public static Map<String,Object> judgeArteriosclerosis(int number){
 		Map<String,Object> maps = new HashMap<String,Object>();
-		List<String> diets = new ArrayList<String>();//饮食
+		List<String> diets = new ArrayList<String>();//饮食 
 		List<String> otherSuggests = new ArrayList<String>();//其他
 		if(number >= 0 && number <= 36){
 			result = "正常";
@@ -751,26 +743,22 @@ public class DiseaseSuggest {
 	public static Map<String,Object> judgeBloodShow(int number){
 		Map<String,Object> maps = new HashMap<String,Object>();
 		if(number >= 0 && number <= 20){
-			result="低血压";
+			// 低血压
+			result = DiseaseEnum.HIGHANDLOW_ONE.getValue();
 			diseaseType = "血压偏低，请注意饮食。";
 		}else if(number > 20 && number <= 40){
-			result="正常血压";
-			diseaseType = "血压正常，继续保持";
+			//正常血压
+			result = DiseaseEnum.HIGHANDLOW_TWO.getValue();
+			diseaseType = "血压正常，继续保持。";
 		}else if(number > 40 && number <= 60){
-			result="正常高值";
-			diseaseType = "血压偏高，请注意休息";
-		}else if(number > 60 && number <= 70){
-			result="一级高血压";
-			diseaseType = "可能存在1级高血压的风险，请注意休息并参考以下建议";
-		}else if(number > 70 && number <= 90){
-			result="二级高血压";
-			diseaseType = "可能存在2级高血压的风险，请注意休息并及时就医";
-		}else if(number > 90){
-			result="三级高血压";
-			diseaseType = "可能存在3级高血压的风险，请注意休息并及时就医";
+			//高血压
+			result = DiseaseEnum.HIGHANDLOW_THREE.getValue();
+			diseaseType = "可能存在高血压的风险，请及时就医。";
 		}
 		maps.put("result", result);
 		maps.put("diseaseType", diseaseType);
+		result = null;
+		diseaseType = null;
 		return maps;
 	}
 
@@ -780,7 +768,7 @@ public class DiseaseSuggest {
 	 * @param sza 低压
 	 * @return
 	 */
-	public static Map<String,Object> getBloodShow(double ssa, double sza){
+	public static Map<String,Object> getBloodShow(double ssa,double sza){
 		Map<String,Object> maps = new HashMap<String,Object>();
 		String bl=null;
 		String bl1=null;
@@ -932,25 +920,58 @@ public class DiseaseSuggest {
 
 	/**
 	 * 17-运动预警的分级和建议
-	 * @param number
+	 * @param status
 	 * @return
 	 */
-	public static Map<String,Object> judgeSportHertRate(int number){
+	public static Map<String,Object> judgeSportHertRate(String status){
 		Map<String,Object> maps = new HashMap<String,Object>();
-		List<String> diets = new ArrayList<String>();//饮食
-		List<String> otherSuggests = new ArrayList<String>();//其他
-		if(number == 3){
-			result = "运动正常";
-			diseaseType = "您本次测量值为"+number+"，运动正常。";
-		}else if(number == 2){
-			result = "运动过于剧烈";
-			diseaseType = "您本次测量值为"+number+"，可能存在运动过于剧烈的情况，请立即休息并参考以下建议，如有不适请及时就医：";
-		}else if(number == 4){
-			result = "提高运动强度";
-			diseaseType = "您本次测量值为"+number+"，建议您适当提高运动强度并请参考以下建议：";
+		if(DiseaseEnum.SPORTHERTRATE_ONE.getValue().equals(status)){
+			diseaseType = "建议您适当提高运动量。";
+		}else if(DiseaseEnum.SPORTHERTRATE_TWO.getValue().equals(status)){
+			diseaseType = "运动正常，请继续保持。";
+		}else if(DiseaseEnum.SPORTHERTRATE_THREE.getValue().equals(status)){
+			diseaseType = "运动过于剧烈，请注意休息。";
 		}
-		maps.put("result", result);
 		maps.put("diseaseType", diseaseType);
+		diseaseType = null;
+		return maps;
+	}
+
+	/**
+	 * 18-血液黏稠度的分级和建议
+	 * @param status
+	 * @return
+	 */
+	public static Map<String,Object> judgeBloodConsistency(String status){
+		Map<String,Object> maps = new HashMap<String,Object>();
+		if(DiseaseEnum.BLOODCONSISTENCY_ONE.getValue().equals(status)){
+			diseaseType = "血稠偏高，建议您适当运动，释放压力，补充水分。";
+		}else if(DiseaseEnum.BLOODCONSISTENCY_ONE.getValue().equals(status)){
+			diseaseType = "血稠正常，请继续保持。";
+		}else if(DiseaseEnum.BLOODCONSISTENCY_ONE.getValue().equals(status)){
+			diseaseType = "血稠偏低，建议您适当运动，补充营养。";
+		}
+		maps.put("diseaseType", diseaseType);
+		diseaseType = null;
+		return maps;
+	}
+
+	/**
+	 * 19-K值的分级和建议
+	 * @param status
+	 * @return
+	 */
+	public static Map<String,Object> judgeKvalue(String status){
+		Map<String,Object> maps = new HashMap<>();
+		if(DiseaseEnum.KVALUE_ONE.getValue().equals(status)){
+			diseaseType = "良好，血管及微循环状况良好";
+		}else if(DiseaseEnum.KVALUE_TWO.getValue().equals(status)){
+			diseaseType = "中等，血管及微循环状况中等";
+		}else if(DiseaseEnum.KVALUE_THREE.getValue().equals(status)){
+			diseaseType = "相对较差，血管及微循环状况相对较差";
+		}
+		maps.put("diseaseType", diseaseType);
+		diseaseType = null;
 		return maps;
 	}
 
@@ -1150,7 +1171,7 @@ public class DiseaseSuggest {
 	 * @return
 	 */
 	public static Map<String,Object> addHyperlipaemiaList(){
-		List<String> diets = new ArrayList<String>();//饮食
+		List<String> diets = new ArrayList<String>();//饮食 
 		List<String> healthProtections = new ArrayList<String>();//保健
 		List<String> otherSuggests = new ArrayList<String>();//其他
 		Map<String,Object> maps = new HashMap<String,Object>();
@@ -1423,7 +1444,7 @@ public class DiseaseSuggest {
 	 * @return
 	 */
 	public static Map<String,Object> addArteriosclerosisList(){
-		List<String> diets = new ArrayList<String>();//饮食
+		List<String> diets = new ArrayList<String>();//饮食 
 		List<String> otherSuggests = new ArrayList<String>();//其他
 		Map<String,Object> maps = new HashMap<String,Object>();
 		//饮食建议

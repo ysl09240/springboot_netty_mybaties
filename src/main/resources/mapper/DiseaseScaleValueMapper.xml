@@ -87,7 +87,7 @@
         aone_center_up_scale,
         aone_center_dwon_scale,
         aone_deep_up_scale,
-        aoneDeepDwonScale,
+        aone_deep_dwon_scale,
         atwo_shallow_up_scale,
         atwo_shallow_dwon_scale,
         atwo_center_up_scale,
@@ -211,6 +211,27 @@
         )
     </insert>
 
+    <!-- 添加病症尺度值四 -->
+    <insert id="addDiseaseScaleValueFour" parameterType="com.shxseer.watch.model.DiseaseScaleValueFour">
+        INSERT INTO disease_scale_value_four (
+        id,
+        disease_scale_one_id,
+        athree_speed_scale,
+        bthree_speed_scale,
+        bscone_speed_scale,
+        kvalue_scale
+        )
+        VALUES
+        (
+        #{id},
+        #{diseaseScaleValueOneId},
+        #{athreeSpeedScale},
+        #{bthreeSpeedScale},
+        #{bsconeSpeedScale},
+        #{kvalueScale}
+        )
+    </insert>
+
     <!-- 根据用户id查询此用户的尺度值一对象 -->
     <select id="getDiseaseScaleValueOneByUserId" parameterType="string" resultType="com.shxseer.watch.model.DiseaseScaleValueOne">
         SELECT
@@ -265,7 +286,7 @@
         aone_center_up_scale as aoneCenterUpScale,
         aone_center_dwon_scale as aoneCenterDwonScale,
         aone_deep_up_scale as aoneDeepUpScale,
-        aoneDeepDwonScale as aoneDeepDwonScale,
+        aone_deep_dwon_scale as aoneDeepDwonScale,
         atwo_shallow_up_scale as atwoShallowUpScale,
         atwo_shallow_dwon_scale as atwoShallowDwonScale,
         atwo_center_up_scale as atwoCenterUpScale,
@@ -319,6 +340,34 @@
           ctwo_deep_dwon_scale as ctwoDeepDwonScale
         FROM disease_scale_value_three
         where disease_scale_one_id = #{diseaseScaleValueOneId}
+    </select>
+
+    <!-- 根据尺度值一id查询此用户的尺度值四对象 -->
+    <select id="getDiseaseScaleValueFourByOneId" parameterType="string" resultType="com.shxseer.watch.model.DiseaseScaleValueFour">
+        SELECT
+        id,
+        disease_scale_one_id as diseaseScaleValueOneId,
+        athree_speed_scale as athreeSpeedScale,
+        bthree_speed_scale as bthreeSpeedScale,
+        bscone_speed_scale as bsconeSpeedScale,
+        kvalue_scale as kvalueScale
+        FROM
+        disease_scale_value_four
+        where disease_scale_one_id = #{diseaseScaleValueOneId}
+    </select>
+
+    <!-- 根据用户id查询此用户的尺度值对象 -->
+    <select id="getDiseaseScaleId" parameterType="com.shxseer.watch.model.BloodBaselineBean" resultType="java.lang.String">
+        SELECT
+          a.id as id
+        FROM
+          disease_scale_value_one a
+        LEFT JOIN watch_user_record b
+        ON a.user_id = b.user_id
+        LEFT JOIN watch_information c
+        ON b.watch_id = c.id
+        WHERE c.imei = #{imei}
+        LIMIT 0, 1;
     </select>
 
 </mapper>

@@ -20,6 +20,9 @@ public class AllWave {
     double are;
     //速度
     double speed;
+
+    public double ll;//每个波长的点数
+
     public AllWave(BaseWaveUtilsEducation bwue){
         this.bwue=bwue;
         compute();
@@ -32,13 +35,16 @@ public class AllWave {
         Waveform[] waveformss=bwue.getwaveforms();
         Waveform[] valideWave=bwue.getvalidWaveforms();
         int hert=0;
+        int dl=0;
         if(datalist.size()!=0)
         {
             for(int i=0;i<datalist.size();i++)
             {
                 hert+=datalist.get(i).getHertrate();
+                dl+=datalist.get(i).getSingleWaveLength();
             }
             this.hertRate=hert/datalist.size();
+            this.ll=dl/datalist.size();
         }
 
         getAre(valideWave);
@@ -53,7 +59,7 @@ public class AllWave {
                for(int j=0;j<waveformDataPoints.length;j++)
                {
                    if(j>0){
-                       are+= Math.abs(waveformDataPoints[j]-waveformDataPoints[j-1]);
+                       are+=Math.abs(waveformDataPoints[j]-waveformDataPoints[j-1]);
                    }
                }
            }
@@ -92,11 +98,36 @@ public class AllWave {
     public double getSpeed() {
         return speed;
     }
-    //获取平均动脉压
+
+    /**
+     * 获取平均动脉压
+     */
     public double getAveragePress(){
-        double Pm=this.are/this.list.size();
-        double PPm=Pm/2;
-        return PPm;
+        double are1=0;
+        for(int i=0;i<list.size();i++){
+            are1+=list.get(i).getAre();
+        }
+        double Pm=(are1/list.size())/this.ll;
+        return Pm*1000;
+    }
+
+    /**
+     * k值的计算公式
+     */
+    public double getKValue(){
+        double s1=0;//振幅
+        double st=0;//结束值
+        double al=0;
+        double center_value=0;
+        for(int i=0;i<list.size();i++){
+            s1 += list.get(i).getCenterValue();
+            st += list.get(i).getStartValue();
+        }
+        al=s1/list.size()/1000;
+        center_value=st/list.size()/1000;
+        double Pm=getAveragePress()/1000;
+        double k_value=(Pm-center_value)/(al-center_value);
+        return k_value;
     }
 
     //获取脉搏波的外周阻力

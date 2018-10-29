@@ -4,8 +4,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * 病症计算完成后给用户本人、好友、亲友组、团体推送消息接口的请求参数Vo
  * @author zhangliang
@@ -16,14 +14,16 @@ public class NotificationToRelatedPersonnelVo {
     @ApiModelProperty(value = "即时消息推送内容", required = true)
     private String pushMessage;
     @ApiModelProperty(value = "脉搏开始测量时间（yyyy-MM-dd HH:mm:ss）", required = true)
+    @NotEmpty(message="脉搏开始测量时间不能为空！")
     private String startTime;
-    @ApiModelProperty(value = "病症编号", required = true)
+    @ApiModelProperty(value = "病症编号（预警报告里可以为空）")
     private int diseaseCode;
     @ApiModelProperty(value = "用户id", required = true)
+    @NotEmpty(message="用户id不能为空！")
     private String userId;
-    @ApiModelProperty(value = "病症图标", required = true)
+    @ApiModelProperty(value = "病症图标（预警报告里可以为空）")
     private String headPortrait;
-    @ApiModelProperty(value = "用户头像", required = true)
+    @ApiModelProperty(value = "用户头像（预警报告里可以为空）")
     private String userHeadPortrait;
     @ApiModelProperty(value = "电话", required = true)
     private String cellphone;
